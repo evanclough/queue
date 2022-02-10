@@ -22,13 +22,14 @@ cursor = connection.cursor()
 
 class GetVideos(Resource):
     def get(self):
-        print()
-        cursor.execute("SELECT * FROM videos")
-        videos = []
-        data = cursor.fetchall()
-        for i in data:
-            videos.append({"URL": i[1], "requester": i[2], "timestamp": i[3].strftime("%m/%d/%Y, %H:%M:%S")})
-        return videos
+        with mysql.connect().cursor() as cursor:
+            cursor.execute("SELECT * FROM videos")
+            videos = []
+            data = cursor.fetchall()
+            print(cursor)
+            for i in data:
+                videos.append({"URL": i[1], "requester": i[2], "timestamp": i[3].strftime("%m/%d/%Y, %H:%M:%S")})
+            return videos
         
 add_video_args = reqparse.RequestParser()
 add_video_args.add_argument("URL", type=str, help="Video URL", required=True)
@@ -36,13 +37,15 @@ add_video_args.add_argument("requester", type=str, help="Username of account tha
 
 class AddVideo(Resource):
     def post(self):
-        args = add_video_args.parse_args()
-        try:
-            cursor.execute(f"INSERT INTO videos (URL, requester) VALUES (\"{args['URL']}\", \"{args['requester']}\");")
-            conncetion.commit()
-        except Exception as e:
-            connection.rollback()
-            print(e)
+        with mysql.connect() as connection:
+            args = add_video_args.parse_args()
+            cursor = connection.cursor()
+            try:
+                cursor.execute(f"INSERT INTO videos (URL, requester) VALUES (\"{args['URL']}\", \"{args['requester']}\");")
+                connection.commit()
+            except Exception as e:
+                connection.rollback()
+                print(e)
             
 #Add routes to API
 api.add_resource(GetVideos, "/get_videos")
