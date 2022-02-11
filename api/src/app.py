@@ -1,9 +1,11 @@
 from flask import Flask
 from flask_restful import Resource, Api, reqparse
 from flaskext.mysql import MySQL
+from flask_cors import CORS
 
 #Initialize app and pymysql instance
 app = Flask(__name__)
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
 mysql = MySQL()
 
 #Configure database
@@ -18,7 +20,8 @@ api = Api(app)
 connection = mysql.connect()
 cursor = connection.cursor()
 
-# Routes
+# Routes 
+# TODO: put in different file
 
 class GetVideos(Resource):
     def get(self):
@@ -26,7 +29,6 @@ class GetVideos(Resource):
             cursor.execute("SELECT * FROM videos")
             videos = []
             data = cursor.fetchall()
-            print(cursor)
             for i in data:
                 videos.append({"URL": i[1], "requester": i[2], "timestamp": i[3].strftime("%m/%d/%Y, %H:%M:%S")})
             return videos

@@ -1,7 +1,8 @@
 import React from "react";
+import Queue from "../Queue";
 
 const Home: React.FunctionComponent = () => {
-  return <div>Welcome to CSH React Boilerplate!</div>;
+  return <div><Queue/></div>;
 };
 
 export default Home;
