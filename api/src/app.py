@@ -55,10 +55,20 @@ class AddVideo(Resource):
                 connection.rollback()
                 print(e)
                 return {"success": False, "message": "Database error."}
-       
+
+class GetCurrentVideo(Resource):
+    def get(self):
+        with mysql.connect().cursor() as cursor:
+            cursor.execute("SELECT * FROM videos WHERE ID = (SELECT MIN(ID) FROM videos);")
+            data = cursor.fetchone()
+            print(data)
+            return {"URL": data[1] if data is not None else "", "timestamp": data[4] if data is not None else -1}
+
+
 #Add routes to API
 api.add_resource(GetVideos, "/get_videos")
 api.add_resource(AddVideo, "/add_video")
+api.add_resource(GetCurrentVideo, "/get_current_video")
 
 if __name__ == '__main__':
     app.run(debug=True)
