@@ -2,6 +2,7 @@ from flask import Flask
 from flask_restful import Resource, Api, reqparse
 from flaskext.mysql import MySQL
 from flask_cors import CORS
+import requests
 
 #Initialize app and pymysql instance
 app = Flask(__name__)
@@ -43,12 +44,18 @@ class AddVideo(Resource):
             args = add_video_args.parse_args()
             cursor = connection.cursor()
             try:
+                VIDEO_ID = args['URL'][len(args['URL']) - 11:]
+                r = requests.get(f"https://www.youtube.com/watch?v={VIDEO_ID}")
+                if "Video unavailable" in r.text:
+                    return {"success": False, "message": "Not valid youtube video ID."}
                 cursor.execute(f"INSERT INTO videos (URL, requester) VALUES (\"{args['URL']}\", \"{args['requester']}\");")
                 connection.commit()
+                return {"success": True}
             except Exception as e:
                 connection.rollback()
                 print(e)
-            
+                return {"success": False, "message": "Database error."}
+       
 #Add routes to API
 api.add_resource(GetVideos, "/get_videos")
 api.add_resource(AddVideo, "/add_video")

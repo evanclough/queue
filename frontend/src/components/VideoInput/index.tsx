@@ -1,5 +1,6 @@
 import React from "react";
 import Axios from "axios";
+import {Alert} from "reactstrap";
 import { useReactOidc } from "@axa-fr/react-oidc-context";
 
 const VideoInputForm: React.FunctionComponent = () => {
@@ -11,8 +12,14 @@ const VideoInputForm: React.FunctionComponent = () => {
         profile: { preferred_username },
     } = oidcUser;
 
-    const [videoURL, setVideoURL]: [string, (video: string) => void] = React.useState("");
-    
+    const [videoURL, setVideoURL] = React.useState<string>("");
+    const [success, setSuccess] = React.useState<boolean>(false);
+    const [visibleAlert, setVisibleAlert] = React.useState<boolean>(false);
+    const [failureMessage, setFailureMessage] = React.useState<string>("");
+    const onDismiss: VoidFunction = () => {
+        setVisibleAlert(false);
+    }
+
     const API_URL = "http://localhost:5000";
     
     const submitVideo: VoidFunction = () => {
@@ -20,7 +27,11 @@ const VideoInputForm: React.FunctionComponent = () => {
             URL: videoURL,
             requester: preferred_username
         }).then(response => {
-            console.log(response);
+            setSuccess(response.data.success);
+            if(!response.data.success){
+                setFailureMessage(response.data.message);
+            }
+            setVisibleAlert(true);
         })
     }
 
@@ -35,6 +46,13 @@ const VideoInputForm: React.FunctionComponent = () => {
             >
                 Submit Video
             </button>
+            <Alert 
+                color = {success ? "success" : "danger"} 
+                isOpen = {visibleAlert}
+                toggle = {onDismiss}
+            >
+                {success ? "Video succesfully added to queue!" : "Something went wrong: " + failureMessage}
+            </Alert>
         </div>
     )
 }
