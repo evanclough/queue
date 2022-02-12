@@ -7,6 +7,8 @@ import "./queue.css";
 interface Video {
   URL: string;
   requester: string;
+  thumbnail: string;
+  title: string;
 }
 
 const Queue: React.FunctionComponent = () => {
@@ -41,7 +43,17 @@ const Queue: React.FunctionComponent = () => {
         <ListGroup>
           {videos.map((video, index) => (
               <ListGroupItem key={index} className="videoInQueue">
-                {video.URL} {video.requester} 
+                <div>
+                  <span>
+                  <img src={video.thumbnail} className="queueThumbnail"></img>
+                  </span>
+                  <span className="videoTitle">
+                  {index}. {video.title}
+                  </span>
+                </div> 
+                <div className="requestedBy">
+                  Requested by {video.requester} 
+                </div>
               </ListGroupItem>
           ))}
         </ListGroup>

@@ -31,7 +31,15 @@ class GetVideos(Resource):
             videos = []
             data = cursor.fetchall()
             for i in data:
-                videos.append({"URL": i[1], "requester": i[2], "timestamp": i[3].strftime("%m/%d/%Y, %H:%M:%S")})
+                scuffed = requests.get(f"https://www.youtube.com/watch?v={i[1]}").text
+                title = scuffed[scuffed.find("<title>") + 7:scuffed.find("</title>") - 10]
+                videos.append({
+                    "URL": i[1], 
+                    "requester": i[2], 
+                    "timestamp": i[3].strftime("%m/%d/%Y, %H:%M:%S"), 
+                    "title": title,
+                    "thumbnail": f"https://i.ytimg.com/vi/{i[1]}/hqdefault.jpg"
+                })
             return videos
         
 add_video_args = reqparse.RequestParser()

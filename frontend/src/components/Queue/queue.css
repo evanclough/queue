@@ -4,3 +4,17 @@
     width:25em;
     max-height: 30em;
 }
+
+.queueThumbnail {
+    float:left;
+    width: 30%;
+    margin: 0.1em;
+}
+
+.videoTitle {
+    float:right;
+}
+
+.requestedBy {
+    float:right;
+}
