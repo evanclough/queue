@@ -48,7 +48,7 @@ class AddVideo(Resource):
                 r = requests.get(f"https://www.youtube.com/watch?v={VIDEO_ID}")
                 if "Video unavailable" in r.text:
                     return {"success": False, "message": "Not valid youtube video ID."}
-                cursor.execute(f"INSERT INTO videos (URL, requester) VALUES (\"{args['URL']}\", \"{args['requester']}\");")
+                cursor.execute(f"INSERT INTO videos (URL, requester) VALUES (\"{VIDEO_ID}\", \"{args['requester']}\");")
                 connection.commit()
                 return {"success": True}
             except Exception as e:
