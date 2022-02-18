@@ -26,13 +26,11 @@ cursor = connection.cursor()
 # Routes 
 # TODO: put in different file
 
-update_queue = False
-
 def should_switch():
         with mysql.connect().cursor() as cursor:
             cursor.execute("SELECT * FROM videos WHERE ID = (SELECT MIN(ID) FROM videos);")
             data = cursor.fetchone()
-            return data is not None and int(time.time()) < data[5] + data[6]
+            return data is not None and data[5] is not None and int(time.time() * 1000) > data[5] + data[6]
 
 def get_videos():
     with mysql.connect().cursor() as cursor:
@@ -86,54 +84,74 @@ class GetCurrentVideo(Resource):
         with mysql.connect().cursor() as cursor:
             cursor.execute("SELECT * FROM videos WHERE ID = (SELECT MIN(ID) FROM videos);")
             data = cursor.fetchone()
-            print(data)
             return {"URL": data[1] if data is not None else "", "startedAt": data[5] if data is not None else -1}
 
 def switch_video():
     with mysql.connect() as connection:
             cursor = connection.cursor()
-            cursor.execute("DELETE FROM videos WHERE ID = (SELECT MIN(ID) FROM videos);")
+            cursor.execute("DELETE FROM videos LIMIT 1;")
             connection.commit()
     with mysql.connect() as connection:
             cursor = connection.cursor()
-            cursor.execute(f"UPDATE videos SET started_at = {int(time.time())} WHERE ID = (SELECT MIN(ID) FROM videos);")
+            cursor.execute(f"""UPDATE videos as nv
+            JOIN (SELECT MIN(ID) AS mid FROM videos) AS mid ON (nv.ID = mid.mid)
+            SET started_at = {int(time.time() * 1000)}; """)
             connection.commit()
     with mysql.connect().cursor() as cursor:
             cursor.execute("SELECT * FROM videos WHERE ID = (SELECT MIN(ID) FROM videos);")
             data = cursor.fetchone()
-            return {"URL": data[1] if data is not None else "", "startedAt": data[5] if data is not None else -1}
+            return {"empty": data is None, "URL": data[1] if data is not None else "", "startedAt": data[5] if data is not None else -1}
 
 def start_video():
     with mysql.connect() as connection:
             cursor = connection.cursor()
-            cursor.execute(f"UPDATE videos SET started_at = {int(time.time())} WHERE ID = (SELECT MIN(ID) FROM videos);")
+            cursor.execute(f"""UPDATE videos as nv
+            JOIN (SELECT MIN(ID) AS mid FROM videos) AS mid ON (nv.ID = mid.mid)
+            SET started_at = {int(time.time() * 1000)}; """)
             connection.commit()
     with mysql.connect().cursor() as cursor:
             cursor.execute("SELECT * FROM videos WHERE ID = (SELECT MIN(ID) FROM videos);")
             data = cursor.fetchone()
             return {"URL": data[1] if data is not None else "", "startedAt": data[5] if data is not None else -1}
 
-class RefreshRequest(Resource):
+def should_update():
+    with mysql.connect().cursor() as cursor:
+        cursor.execute("SELECT UNIX_TIMESTAMP(timestamp) FROM videos WHERE ID = (SELECT MAX(ID) FROM videos);")
+        data = cursor.fetchone()
+        return data is not None and int(time.time() * 1000) < data[0] * 1000 + 1000
+
+def fetch_queue_length():
+    with mysql.connect().cursor() as cursor:
+        cursor.execute("SELECT * FROM VIDEOS;")
+        data = cursor.fetchall()
+        return len(data)
+
+class QueueRefreshRequest(Resource):
     def get(self):
         response = {}
-        response["startVideo"] = False
-        response["switchVideo"]: should_switch()
-        if response["switchVideo"]: 
-            response["switchResponse"] = switch_video()
-        response["updateQueue"] = update_queue
-        if update_queue:
+        response["updateQueue"] = should_update() or should_switch()
+        if response["updateQueue"]:
             response["updateQueueResponse"] = get_videos()
-            if len(response["updateQueueResponse"]) == 1:
-                response["startVideo"] = True
-                response["startResponse"] = start_video()
-        update_queue = False
+        return response
+
+class PlayerRefreshRequest(Resource):
+    def get(self):
+        response = {}
+        response["startVideo"] = (should_update() and fetch_queue_length() == 1)
+        if response["startVideo"]:
+            response["videoResponse"] = start_video()
+        response["switchVideo"] = should_switch()
+        if response["switchVideo"]: 
+            response["videoResponse"] = switch_video()
+        response["empty"] = fetch_queue_length() == 0
         return response
 
 #Add routes to API
 api.add_resource(GetVideos, "/get_videos")
 api.add_resource(AddVideo, "/add_video")
 api.add_resource(GetCurrentVideo, "/get_current_video")
-api.add_resource(RefreshRequest, "/refresh_request")
+api.add_resource(QueueRefreshRequest, "/queue_refresh_request")
+api.add_resource(PlayerRefreshRequest, "/player_refresh_request")
 
 if __name__ == '__main__':
     app.run(debug=True)

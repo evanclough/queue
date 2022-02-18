@@ -38,6 +38,24 @@ const Queue: React.FunctionComponent = () => {
         });
     }, [])
 
+    React.useEffect(() => {
+      const interval = setInterval(() => {
+          Axios.get<any>(API_URL + "/queue_refresh_request", {
+              headers: {
+                  "Content-Type": "application/json",
+                  "Access-Control-Allow-Origin": "*"
+              },
+          }).then(response => {
+              if(response.data.updateQueue){
+                  setVideos(response.data.updateQueueResponse);
+              }
+          })
+      }, 400)
+      return () => {
+          clearInterval(interval);
+      };
+  }, [])
+
     return (
       <div className="overflow-auto" id="queueContainer">
         <ListGroup>

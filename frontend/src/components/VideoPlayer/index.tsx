@@ -14,7 +14,7 @@ const VideoPlayer: React.FunctionComponent = () => {
     const [error, setError]: [string, (error: string) => void] = React.useState("");
     
     const API_URL: string = "http://localhost:5000";
-    
+  
     React.useEffect(() => {
         Axios.get<Video>(API_URL + "/get_current_video", {
           headers: {
@@ -22,7 +22,6 @@ const VideoPlayer: React.FunctionComponent = () => {
             "Access-Control-Allow-Origin": "*"
           },
         }).then(response => {
-            console.log(response)
             if(response.data.startedAt  != -1){
                 setCurrentVideo(response.data);
                 setEmpty(false)
@@ -37,6 +36,28 @@ const VideoPlayer: React.FunctionComponent = () => {
           setError(error);
           setLoading(false);
         });
+    }, [])
+
+    React.useEffect(() => {
+        const interval = setInterval(() => {
+            Axios.get<any>(API_URL + "/player_refresh_request", {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "*"
+                },
+            }).then(response => {
+                
+                if(response.data.empty != isEmpty){
+                    setEmpty(!isEmpty);
+                }
+                if(response.data.startVideo || response.data.switchVideo){
+                    setCurrentVideo({URL: response.data.videoResponse.URL, startedAt: 0});
+                }
+            })
+        }, 400)
+        return () => {
+            clearInterval(interval);
+        };
     }, [])
 
     return (
@@ -54,7 +75,7 @@ const VideoPlayer: React.FunctionComponent = () => {
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                 >
 
-            </iframe>
+            </iframe>   
             }
         </div>
     )
