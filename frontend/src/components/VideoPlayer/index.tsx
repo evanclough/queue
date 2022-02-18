@@ -3,11 +3,11 @@ import Axios from "axios";
 
 interface Video {
     URL: string;
-    timestamp: number;
+    startedAt: number;
 }
 
 const VideoPlayer: React.FunctionComponent = () => {
-    const defaultVideo: Video = {URL: "l", timestamp: 123};
+    const defaultVideo: Video = {URL: "l", startedAt: 123};
     const [currentVideo, setCurrentVideo] = React.useState<Video>(defaultVideo);
     const [isEmpty, setEmpty] = React.useState<boolean>(true);
     const [loading, setLoading]: [boolean, (loading: boolean) => void] = React.useState<boolean>(true);
@@ -23,7 +23,7 @@ const VideoPlayer: React.FunctionComponent = () => {
           },
         }).then(response => {
             console.log(response)
-            if(response.data.timestamp != -1){
+            if(response.data.startedAt  != -1){
                 setCurrentVideo(response.data);
                 setEmpty(false)
             }else{
@@ -46,7 +46,9 @@ const VideoPlayer: React.FunctionComponent = () => {
             <iframe 
                 width="560" 
                 height="315" 
-                src={"https://www.youtube.com/embed/" + currentVideo.URL + "?start=" + currentVideo.timestamp}
+                src={"https://www.youtube.com/embed/" + currentVideo.URL
+                 + "?start=" + (Math.floor((Date.now() - currentVideo.startedAt) / 1000)) + 
+                "&autoplay=1"}
                 title="YouTube video player" 
                 frameBorder="0" 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
