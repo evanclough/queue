@@ -1,6 +1,8 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO, send, emit
 from flaskext.mysql import MySQL
+import html
+import requests
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
@@ -32,9 +34,17 @@ def disconnect():
 @socketio.on('link_input')
 def link_input(link):
     print('received link: ' + link)
+    link = html.escape(link)
+    #check if link is valid youtube video
+    VIDEO_ID = link[len(link) - 11:]
+    r = requests.get(f"https://www.youtube.com/watch?v={VIDEO_ID}")
+    if "Video unavailable" in r.text:
+        emit("invalid_video", "The link you sent isn't a valid youtube video.")
+        return
     #update database
-    #then broadcast a queue update to all in room
-    emit("input_status", "poggers")
+
+    #send out video to everyone in room
+    emit("add_video", link, broadcast=True)
 
 
 if __name__ == '__main__':
