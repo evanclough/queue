@@ -4,15 +4,17 @@ Queue is a youtube queue gated behind CSH account SSO
 To run the application, you must have the latest version of Python 3 and virtualenv installed. Once you have those installed, create a new virtualenv and install the Python dependencies:
 ## Windows CMD
 ```
-    virtualenv .meetandhack2022env
-    .\.meetandhack2022env\Scripts\activate
+    virtualenv .env
+    .\.env\Scripts\activate
     pip install -r requirements.txt
-    set FLASK_APP=src/project
+    cd {directory with app.py} 
+    flask run
 ```
  ## Bash 
  ```
-    virtualenv .meetandhack2022env
-    source .meetandhack2022env/bin/activate
+    virtualenv .env
+    source .env/bin/activate
     pip install -r requirements.txt
-    export FLASK_APP=src/project
+    cd {directory with app.py} 
+    flask run
  ```
