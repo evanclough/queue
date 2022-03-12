@@ -1,4 +1,6 @@
-Queue is a youtube queue gated behind CSH account SSO
+Queue is a application which enables users to queue videos
+to watch together as a group. Basically unscuffed PlugDJ (RIP).
+IdeaL for bored online chatrooms (e.g. twitch offline chat).
 
 # Development
 To run the application, you must have the latest version of Python 3 and virtualenv installed. Once you have those installed, create a new virtualenv and install the Python dependencies:
