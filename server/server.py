@@ -33,19 +33,24 @@ def disconnect():
     
 @socketio.on('link_input')
 def link_input(link):
-    print('received link: ' + link)
     link = html.escape(link)
     #check if link is valid youtube video
     VIDEO_ID = link[len(link) - 11:]
     r = requests.get(f"https://www.youtube.com/watch?v={VIDEO_ID}")
     if "Video unavailable" in r.text:
-        emit("invalid_video", "The link you sent isn't a valid youtube video.")
+        print(123)
+        emit("input_status", {"success": False})
         return
     #update database
 
     #send out video to everyone in room
     emit("add_video", link, broadcast=True)
+    emit("input_status", {"success": True})
 
+@socketio.on('get_current_video')
+def get_current_video():
+    #grab current video from DB
+    emit("switch_video", {"videoID": "1nzuUprovC4"})
 
 if __name__ == '__main__':
     socketio.run(app)
