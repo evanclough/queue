@@ -1,6 +1,7 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO, send, emit
 from flaskext.mysql import MySQL
+import time
 import html
 import requests
 
@@ -50,7 +51,23 @@ def link_input(link):
 @socketio.on('get_current_video')
 def get_current_video():
     #grab current video from DB
-    emit("switch_video", {"videoID": "1nzuUprovC4"})
+    socketio.emit("switch_video", {"videoID": "1nzuUprovC4"})
+
+def main_loop():
+        pass
+        #if current video is over, 
+        #then emit switch_video with next video in db
+        #set time started to now, 
+        #and edit DB accordingly.
+        #if there isn't a next video, 
+        #then emit switch_video with null or
+        #whatever flag I choose.
+
+def main_loop(socketio):
+    while True:
+        socketio.emit("abc", "123")
+        time.sleep(1)
 
 if __name__ == '__main__':
+    SocketIO.start_background_task(main_loop(socketio))
     socketio.run(app)
