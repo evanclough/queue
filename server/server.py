@@ -44,7 +44,7 @@ def check_if_valid_room():
     res = False
     for datum in data:
         res |= datum[1]
-    return {"success": res}
+    return {"roomExists": res}
 
 class Room(Namespace):
     def __init__(self, route):
