@@ -11,9 +11,6 @@ const LinkInput = ({socket}) => {
             setShowInputStatus(true);
             setTimeout(() => setShowInputStatus(false), 5000);
         })
-        socket.on('abc', data => {
-            console.log(data);
-        })
     }, [socket])
 
     const submitLink = e => {

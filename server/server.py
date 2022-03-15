@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, request
 from flask_socketio import SocketIO, send, emit, Namespace
 from flaskext.mysql import MySQL
 import time
@@ -22,6 +22,29 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 #with mysql.connect() as connection
 #if insert, connection.commit
 #if pulling, cursor.fetchone or cursor.fetchall
+
+@app.route('/get_rooms')
+def get_rooms():
+    with mysql.connect() as connection:
+        cursor = connection.cursor()
+        sql_query = "SELECT * FROM rooms;"
+        cursor.execute(sql_query)
+        res = []
+        raw_data = cursor.fetchall()
+        for room in raw_data:
+            res.append({"ID": room[0], "name": room[1]})
+        return res
+
+@app.route("/check_if_valid_room", methods=['POST'])
+def check_if_valid_room():
+    name = request.data["name"]
+    sql_query = "SELECT * FROM rooms;"
+    cursor.execute(sql_query)
+    raw_data = cursor.fetchall()
+    res = False
+    for datum in data:
+        res |= datum[1]
+    return {"success": res}
 
 class Room(Namespace):
     def __init__(self, route):

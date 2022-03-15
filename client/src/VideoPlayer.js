@@ -6,6 +6,7 @@ const VideoPlayer = ({socket}) => {
     const [startPoint, setStartPoint] = useState(0);
     useEffect(() => {
         socket.on("switch_video", data => {
+            console.log(data);
             setCurrentVideoID(data.videoID);
             setStartPoint(data.startPoint);
         })

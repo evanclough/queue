@@ -7,15 +7,22 @@ function App() {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    const newSocket = io(`http://localhost:5000`);
+    const newSocket = io(`http://localhost:5000/a`);
     setSocket(newSocket);
     return () => newSocket.close();
   }, [setSocket]);
 
   return (
     <div className="App">
-      <div> <VideoPlayer socket={socket}/> </div>
-      <div> <LinkInput socket={socket}/></div>
+      {
+        socket ?
+        <>
+          <div> <VideoPlayer socket={socket}/> </div>
+          <div> <LinkInput socket={socket}/></div>
+        </> :
+        "connecting..."
+      } 
+      
     </div>
   );
 }
