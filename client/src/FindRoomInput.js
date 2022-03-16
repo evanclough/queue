@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react';
+import {useState} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 
@@ -19,7 +19,7 @@ const FindRoomInput = ({setRoomVisible, setCurrentRoom}) => {
             }else{
                 setInputStatus(false);
                 setShowInputStatus(true);
-                setTimeout(() => showInputStatus(false), 5000);
+                setTimeout(() => setShowInputStatus(false), 5000);
             }
         })
         setRoom("");

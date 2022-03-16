@@ -10,11 +10,11 @@ function Queue({room}) {
     const newSocket = io(`http://localhost:5000/${room}`);
     setSocket(newSocket);
     return () => newSocket.close();
-  }, [setSocket]);
+  }, [setSocket, room]);
 
   return (
     <div className="Queue">
-      {
+      { 
         socket ?
         <>
           <div> <VideoPlayer socket={socket}/> </div>

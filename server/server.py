@@ -1,4 +1,5 @@
 from flask import Flask, request
+from flask_cors import CORS
 from flask_socketio import SocketIO, send, emit, Namespace
 from flaskext.mysql import MySQL
 import time
@@ -7,6 +8,7 @@ import requests
 from queue import Queue
 
 app = Flask(__name__)
+CORS(app)
 app.config['SECRET_KEY'] = 'secret!'
 mysql = MySQL()
 
@@ -23,7 +25,6 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 #if insert, connection.commit
 #if pulling, cursor.fetchone or cursor.fetchall
 
-@app.route('/get_rooms')
 def get_rooms():
     with mysql.connect() as connection:
         cursor = connection.cursor()
@@ -35,22 +36,29 @@ def get_rooms():
             res.append({"ID": room[0], "name": room[1]})
         return res
 
+@app.route('/get_rooms')
+def get_rooms_route():
+    return get_rooms()
+
 @app.route("/check_if_valid_room", methods=['POST'])
 def check_if_valid_room():
-    name = request.data["name"]
-    sql_query = "SELECT * FROM rooms;"
-    cursor.execute(sql_query)
-    raw_data = cursor.fetchall()
-    res = False
-    for datum in data:
-        res |= datum[1]
-    return {"roomExists": res}
+    with mysql.connect() as connection:
+        cursor = connection.cursor()
+        name = request.json["room"]
+        sql_query = "SELECT * FROM rooms;"
+        cursor.execute(sql_query)
+        raw_data = cursor.fetchall()
+        res = False
+        for datum in raw_data:
+            res |= (datum[1] == name)
+        return {"roomExists": res}
 
 class Room(Namespace):
     def __init__(self, route):
         super().__init__(route)
         self.queue = Queue()
         self.connected = 0
+        print("initialized", route)
     def on_connect(self):
         print('connected')
         emit("current_videos", list(self.queue.queue))
@@ -74,10 +82,8 @@ class Room(Namespace):
     def on_get_current_video(self):
         emit('get_current_video', {"ID": "-1"} if self.queue.empty() else self.queue.get())
 
-#query db for rooms
-rooms = ["a", "b", "c"]
-for room in rooms:
-    socketio.on_namespace(Room(f'/{room}'))
-
 if __name__ == '__main__':
+    rooms = get_rooms()
+    for room in rooms:
+        socketio.on_namespace(Room(f'/{room["name"]}'))
     socketio.run(app)
