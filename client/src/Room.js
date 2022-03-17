@@ -3,6 +3,8 @@ import {useState, useEffect} from 'react';
 import { io } from 'socket.io-client';
 import LinkInput from './LinkInput';
 import VideoPlayer from './VideoPlayer';
+import Queue from './Queue';
+
 function Room({room, backToHomepage}) {
   const [socket, setSocket] = useState(null);
 
@@ -17,7 +19,7 @@ function Room({room, backToHomepage}) {
       { 
         socket ?
         <>
-          <div> <VideoPlayer socket={socket}/> </div>
+          <div> <VideoPlayer socket={socket}/> <Queue socket={socket}/></div>
           <div> <LinkInput socket={socket}/></div>
           <div><button onClick={backToHomepage} > Back to homepage</button></div>
         </> :

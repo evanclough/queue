@@ -59,9 +59,13 @@ class Room(Namespace):
         self.queue = Queue()
         self.connected = 0
         print("initialized", route)
-    def on_connect(self):
+    def on_connect(self, auth):
         print('connected')
-        emit("current_videos", {"videos": map(lambda v: {"ID": v}, list(self.queue.queue))})
+        qlist = list(self.queue.queue)
+        res_list = []
+        for video in qlist:
+            res_list.append({"ID": video})
+        emit("current_videos", {"videos": res_list})
         emit("connected_users", {"connectedUsers": self.connected})
         self.connected+=1
     def on_disconnect(self):
@@ -77,7 +81,7 @@ class Room(Namespace):
             emit("input_status", {"success": False})
             return
         self.queue.put(VIDEO_ID)
-        emit("add_video", link, broadcast=True)
+        emit("add_video", {"video": {"ID": VIDEO_ID}}, broadcast=True)
         emit("input_status", {"success": True})
     def on_get_current_video(self):
         emit('get_current_video', {"ID": "-1"} if self.queue.empty() else self.queue.get())

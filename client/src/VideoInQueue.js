@@ -18,7 +18,7 @@ const VideoInQueue = ({ID, index}) => {
     return (
         <div>
             {index}
-            <img src = {`https://i.ytimg.com/vi/${ID}/hqdefault.jpg`}></img>
+            <img src = {`https://i.ytimg.com/vi/${ID}/hqdefault.jpg`} alt=""></img>
             {title}
         </div>
     )
