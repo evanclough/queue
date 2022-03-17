@@ -6,6 +6,7 @@ import time
 import html
 import requests
 from queue import Queue
+import time
 
 app = Flask(__name__)
 CORS(app)
@@ -58,6 +59,9 @@ class Room(Namespace):
         super().__init__(route)
         self.queue = Queue()
         self.connected = 0
+        self.current_video_ID = "-1"
+        self.started_video_at = 0
+        self.current_video_duration = -1
         print("initialized", route)
     def on_connect(self, auth):
         self.connected+=1
@@ -68,6 +72,7 @@ class Room(Namespace):
             res_list.append({"ID": video})
         emit("current_videos", {"videos": res_list})
         emit("connected_users", {"connected_users": self.connected}, broadcast=True)
+        emit('switch_video', {"videoID": self.current_video_ID, "startPoint": int(time.time()) - self.started_video_at})
     def on_disconnect(self):
         print('client_disconnected')
         self.connected-=1
@@ -78,14 +83,27 @@ class Room(Namespace):
         VIDEO_ID = link[len(link) - 11:]
         r = requests.get(f"https://www.youtube.com/watch?v={VIDEO_ID}")
         if "Video unavailable" in r.text:
-            print(123)
             emit("input_status", {"success": False})
             return
         self.queue.put(VIDEO_ID)
         emit("add_video", {"video": {"ID": VIDEO_ID}}, broadcast=True)
         emit("input_status", {"success": True})
-    def on_get_current_video(self):
-        emit('get_current_video', {"ID": "-1"} if self.queue.empty() else self.queue.get())
+    def main_loop(self):
+        if self.current_video_ID == "-1":
+            if len(list(self.queue.queue)) != 0:
+                self.current_video_ID = self.queue.get()
+                self.current_video_duration = -1
+                self.started_video_at = int(time.time())
+                emit('switch_video', {"videoID": self.current_video_ID, "startPoint": int(time.time()) - self.started_video_at})
+        else:
+            if int(time.time()) - self.started_video_at > self.current_video_duration:
+                self.current_video_ID = self.queue.get()
+                self.current_video_duration = -1
+                self.started_video_at = int(time.time())
+                emit('switch_video', {"videoID": self.current_video_ID, "startPoint": int(time.time()) - self.started_video_at})
+        #check if current video is over
+        #if so pop queue and switch current_video, started_at, and current_video_duration
+
 
 if __name__ == '__main__':
     rooms = get_rooms()
