@@ -60,17 +60,18 @@ class Room(Namespace):
         self.connected = 0
         print("initialized", route)
     def on_connect(self, auth):
+        self.connected+=1
         print('connected')
         qlist = list(self.queue.queue)
         res_list = []
         for video in qlist:
             res_list.append({"ID": video})
         emit("current_videos", {"videos": res_list})
-        emit("connected_users", {"connectedUsers": self.connected})
-        self.connected+=1
+        emit("connected_users", {"connected_users": self.connected}, broadcast=True)
     def on_disconnect(self):
         print('client_disconnected')
         self.connected-=1
+        emit("connected_users", {"connected_users": self.connected}, broadcast=True)
     def on_link_input(self, data):
         link = html.escape(data["link"])
         #check if link is valid youtube video
