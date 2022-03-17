@@ -1,30 +1,28 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {useState, useEffect} from 'react';
-import { io } from 'socket.io-client';
-import LinkInput from './LinkInput';
-import VideoPlayer from './VideoPlayer';
-function Queue({room}) {
-  const [socket, setSocket] = useState(null);
+import VideoInQueue from './VideoInQueue';
 
-  useEffect(() => {
-    const newSocket = io(`http://localhost:5000/${room}`);
-    setSocket(newSocket);
-    return () => newSocket.close();
-  }, [setSocket, room]);
+const Queue = ({socket}) => {
+    const [videos, setVideos] = useState([]);
+    
+    useEffect(() => {
+        socket.on("current_videos", data => {
+            setVideos(data.videos);
+        })
+    }, [socket])
 
-  return (
-    <div className="Queue">
-      { 
-        socket ?
-        <>
-          <div> <VideoPlayer socket={socket}/> </div>
-          <div> <LinkInput socket={socket}/></div>
-        </> :
-        "connecting..."
-      } 
-      
-    </div>
-  );
+    return (
+        <div>
+            Queue
+            {videos.map((video, index) => {
+                <VideoInQueue
+                    ID = {video.ID}
+                    index = {index}
+                />
+            })}
+        </div>
+    )
+
 }
 
 export default Queue;

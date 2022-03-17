@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {useState} from 'react';
-import Queue from './Queue';
+import Room from './Room';
 import HomePage from './HomePage';
 
 function App() {
@@ -10,8 +10,9 @@ function App() {
   return (
     <div className="App">
     {roomVisible ?
-        <Queue
-        room={currentRoom}
+        <Room
+          room={currentRoom}
+          backToHomepage = {() => setRoomVisible(false)}
         />
       :
         <HomePage

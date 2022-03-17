@@ -61,7 +61,7 @@ class Room(Namespace):
         print("initialized", route)
     def on_connect(self):
         print('connected')
-        emit("current_videos", list(self.queue.queue))
+        emit("current_videos", {"videos": map(lambda v: {"ID": v}, list(self.queue.queue))})
         emit("connected_users", {"connectedUsers": self.connected})
         self.connected+=1
     def on_disconnect(self):
