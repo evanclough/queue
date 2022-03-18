@@ -1,5 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import FindRoomInput from './FindRoomInput';
+import CreateRoomInput from "./CreateRoomInput";
 
 function HomePage({setRoomVisible, setCurrentRoom}) {
 
@@ -9,6 +10,7 @@ function HomePage({setRoomVisible, setCurrentRoom}) {
             setRoomVisible={setRoomVisible}
             setCurrentRoom={setCurrentRoom}
         />
+        <CreateRoomInput/>
     </div>
   );
 }
