@@ -12,6 +12,9 @@ const Queue = ({socket}) => {
         socket.on("add_video", data => {
             setVideos([...videos ,data.video]);
         })
+        socket.on("dequeue", () => {
+            setVideos(videos.filter((video, idx) => idx != 0));
+        })
     }, [socket, videos]);
 
     return (

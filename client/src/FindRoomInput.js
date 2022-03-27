@@ -1,6 +1,7 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
+import './FindRoomInput.css'
 
 const HOST_URL = 'localhost:5000'
 
@@ -15,6 +16,7 @@ const FindRoomInput = ({setRoomVisible, setCurrentRoom}) => {
         .then(response => {
             if(response.data.roomExists){
                 setCurrentRoom(room);
+                setRoom("");
                 setRoomVisible(true);
             }else{
                 setInputStatus(false);
@@ -22,10 +24,9 @@ const FindRoomInput = ({setRoomVisible, setCurrentRoom}) => {
                 setTimeout(() => setShowInputStatus(false), 5000);
             }
         })
-        setRoom("");
     }
 
-    return <div>  
+    return <div id = 'container'>  
         <form onSubmit={submitRoom}>
             <input
                 autoFocus

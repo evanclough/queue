@@ -8,6 +8,7 @@ import requests
 from queue import Queue
 import time
 from multiprocessing import Process, Value, Array
+import youtube_dl
 
 app = Flask(__name__)
 CORS(app)
@@ -26,6 +27,11 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 #with mysql.connect() as connection
 #if insert, connection.commit
 #if pulling, cursor.fetchone or cursor.fetchall
+
+def get_duration(ID):
+    with youtube_dl.YoutubeDL({}) as dl:
+        dictMeta = dl.extract_info(f"https://www.youtube.com/watch?v={ID}", download=False)
+    return dictMeta['duration']
 
 def get_rooms():
     with mysql.connect() as connection:
@@ -83,7 +89,7 @@ class Room(Namespace):
         qlist = list(self.queue.queue)
         res_list = []
         for video in qlist:
-            res_list.append({"ID": video})
+            res_list.append({"ID": video["ID"]})
         emit("current_videos", {"videos": res_list})
         emit("connected_users", {"connected_users": self.connected}, broadcast=True)
         emit('switch_video', {"videoID": self.current_video_ID, "startPoint": int(time.time()) - self.started_video_at})
@@ -99,24 +105,39 @@ class Room(Namespace):
         if "Video unavailable" in r.text:
             emit("input_status", {"success": False})
             return
-        self.queue.put(VIDEO_ID)
+        self.queue.put({"ID": VIDEO_ID, "duration": get_duration(VIDEO_ID)})
         emit("add_video", {"video": {"ID": VIDEO_ID}}, broadcast=True)
         emit("input_status", {"success": True})
-    def main_loop(self):
-        while True:
-            print(1)
-            """if self.current_video_ID == "-1":
+    def on_main_loop(self):
+        if self.current_video_ID == "-1":
+            print("there are no videos in the queue")
+            if len(list(self.queue.queue)) != 0:
+                    print("video added, switching")
+                    new_video_obj = self.queue.get()
+                    self.current_video_ID = new_video_obj["ID"]
+                    self.current_video_duration = new_video_obj["duration"]
+                    self.started_video_at = int(time.time())
+                    print(self.current_video_ID, self.current_video_duration, self.started_video_at, len(list(self.queue.queue)))
+                    emit("switch_video", {"videoID": self.current_video_ID, "startPoint": 0}, broadcast=True)
+        else:
+            print("a video is going")
+            if int(time.time()) - self.started_video_at > self.current_video_duration:
+                print("switching to new video")
                 if len(list(self.queue.queue)) != 0:
-                    self.current_video_ID = self.queue.get()
-                    self.current_video_duration = -1
+                    new_video_obj = self.queue.get()
+                    self.current_video_ID = new_video_obj["ID"]
+                    self.current_video_duration = new_video_obj["duration"]
                     self.started_video_at = int(time.time())
-                    emit('switch_video', {"videoID": self.current_video_ID, "startPoint": int(time.time()) - self.started_video_at})
-            else:
-                if int(time.time()) - self.started_video_at > self.current_video_duration:
-                    self.current_video_ID = self.queue.get()
+                    emit('switch_video', {"videoID": self.current_video_ID, "startPoint": 0}, broadcast=True)
+                    emit("dequeue", broadcast=True)
+                else:
+                    print("video is over but there are no new ones :(")
                     self.current_video_duration = -1
-                    self.started_video_at = int(time.time())
-                    emit('switch_video', {"videoID": self.current_video_ID, "startPoint": int(time.time()) - self.started_video_at})"""
+                    self.current_video_ID = "-1"
+                    self.started_video_at = 0
+                    emit('switch_video', {"videoID": self.current_video_ID, "startPoint": 0}, broadcast=True)
+                    emit("dequeue", broadcast=True)
+
             #check if current video is over
             #if so pop queue and switch current_video, started_at, and current_video_duration
 
@@ -124,6 +145,7 @@ class Room(Namespace):
 if __name__ == '__main__':
     rooms = get_rooms()
     room_processes = []
+    #re render room list when new room is made
     for room in rooms:
         room_obj = Room(f'/{room["name"]}')
         #room_obj_value = Value(Room, room_obj)
