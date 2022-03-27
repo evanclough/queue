@@ -23,7 +23,7 @@ function Room({room, backToHomepage}) {
           <div id = 'leftSideOfRoom'>
             <div id='roomHeader'><h1>room: {room}</h1></div>
             <div id = 'connectedUsers'><ConnectedUsers socket={socket}/></div>
-            <div> <VideoPlayer socket={socket}/> </div>
+            <div id = 'videoPlayerContainer'> <VideoPlayer socket={socket}/> </div>
             <div id = "linkInput"> <LinkInput socket={socket}/></div>
           </div>
           <div id ='rightSideOfRoom'>
