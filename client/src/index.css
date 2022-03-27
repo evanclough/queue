@@ -35,11 +35,6 @@ code {
   height:3em;
 }
 
-.fuckoff {
-  max-height: 5em;
-  width:30%;
-}
-
 #backToHomepageButton {
   position:relative;
   top:1em;
@@ -104,10 +99,37 @@ code {
 }
 
 .videoInQueue {
+  padding-top:1em;
   font-size:150%;
   position:relative;
   top:2em;
   width:100%;
+}
+
+.indexInQueue {
+  padding-left: 2%;
+  padding-right: 2%;
+}
+
+#queueHeader {
+  position:relative;
+  top:1em;
+  width:100%;
+  text-align: center;  
+}
+
+.imageInVideoInQueue {
+  width: 25%;
+  padding-right: 2%;
+}
+
+.titleInVideoInQueue {
+  font-size:80%;
+  width:60%;
+  text-overflow:ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  display:inline-block;
 }
 
 #linkInput {

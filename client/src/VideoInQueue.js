@@ -2,24 +2,16 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {useState, useEffect} from 'react';
 import axios from 'axios';
 
-const VideoInQueue = ({ID, index}) => {
-    const [title, setTitle] = useState("");
-
-    useEffect(() => {
-        axios.get(`https://noembed.com/embed?url=https://www.youtube.com/watch?v=${ID}`)
-        .then(data => {
-            setTitle(data.data.title);
-        })
-        .catch(err => {
-            setTitle("couldn't get title");
-        })
-    }, [])
-
+const VideoInQueue = ({ID, index, title, channel_name, channel_url}) => {
     return (
         <div className = 'videoInQueue'>
-            {index} {"   "}   
-            <img className="fuckoff" src = {`https://i.ytimg.com/vi/${ID}/hqdefault.jpg`} alt=""></img>
-            {title}
+            <span className="indexInQueue">
+                {index} {"   "}   
+            </span>
+            <img className="imageInVideoInQueue" src = {`https://i.ytimg.com/vi/${ID}/hqdefault.jpg`} alt=""></img>
+            <span className="titleInVideoInQueue">
+                {title}
+            </span>
         </div>
     )
 }

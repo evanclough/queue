@@ -87,10 +87,7 @@ class Room(Namespace):
         self.connected+=1
         print('connected')
         qlist = list(self.queue.queue)
-        res_list = []
-        for video in qlist:
-            res_list.append({"ID": video["ID"]})
-        emit("current_videos", {"videos": res_list})
+        emit("current_videos", {"videos": qlist})
         emit("connected_users", {"connected_users": self.connected}, broadcast=True)
         emit('switch_video', {"videoID": self.current_video_ID, "startPoint": int(time.time()) - self.started_video_at})
     def on_disconnect(self):
@@ -105,8 +102,9 @@ class Room(Namespace):
         if "Video unavailable" in r.text:
             emit("input_status", {"success": False})
             return
-        self.queue.put({"ID": VIDEO_ID, "duration": get_duration(VIDEO_ID)})
-        emit("add_video", {"video": {"ID": VIDEO_ID}}, broadcast=True)
+        video_data = requests.get(f"https://noembed.com/embed?url=https://www.youtube.com/watch?v={VIDEO_ID}").json()
+        self.queue.put({"ID": VIDEO_ID, "duration": get_duration(VIDEO_ID), "title": video_data["title"], "author_name": video_data["author_name"], "author_url": video_data["author_url"]})
+        emit("add_video", {"video": {"ID": VIDEO_ID, "title": video_data["title"], "author_name": video_data["author_name"], "author_url": video_data["author_url"]}}, broadcast=True)
         emit("input_status", {"success": True})
     def on_main_loop(self):
         if self.current_video_ID == "-1":
