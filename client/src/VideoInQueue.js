@@ -8,17 +8,17 @@ const VideoInQueue = ({ID, index}) => {
     useEffect(() => {
         axios.get(`https://noembed.com/embed?url=https://www.youtube.com/watch?v=${ID}`)
         .then(data => {
-            setTitle(data.title);
+            setTitle(data.data.title);
         })
         .catch(err => {
             setTitle("couldn't get title");
         })
-    })
+    }, [])
 
     return (
-        <div>
-            {index}
-            <img src = {`https://i.ytimg.com/vi/${ID}/hqdefault.jpg`} alt=""></img>
+        <div className = 'videoInQueue'>
+            {index} {"   "}   
+            <img className="fuckoff" src = {`https://i.ytimg.com/vi/${ID}/hqdefault.jpg`} alt=""></img>
             {title}
         </div>
     )

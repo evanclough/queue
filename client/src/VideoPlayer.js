@@ -11,9 +11,9 @@ const VideoPlayer = ({socket}) => {
         })
     }, [socket]);
 
-    return <>
+    return <div id="videoPlayer">
         {currentVideoID === "-1" ? 
-            "the queue is empty :(" :
+            <h4> the queue is empty :( </h4>:
             <iframe 
             width="560" 
             height="315" 
@@ -24,7 +24,7 @@ const VideoPlayer = ({socket}) => {
         </iframe>
         }
         
-    </>
+    </div>
 }
 
 export default VideoPlayer

@@ -5,7 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #fbd2ff !important;
+  background: linear-gradient(90deg, rgba(150,70,255,1) 0%, rgba(210,0,255,1) 0%, rgba(140,0,255,1) 72%, rgba(110,0,255,1) 100%) !important;
 }
 
 code {
@@ -33,4 +33,70 @@ code {
 .homepageInput {
   width:25em;
   height:3em;
+}
+
+.fuckoff {
+  max-height: 5em;
+}
+
+#backToHomepageButton {
+  position:relative;
+  top:1em;
+}
+
+#queue {
+  height:30em;
+  width:30em;
+  background: linear-gradient(90deg, rgba(150,70,255,1) 0%, rgba(241,177,255,1) 0%, rgba(242,225,255,1) 49%, rgba(200,158,255,1) 100%);
+  position: relative;
+  top:2em;
+  max-height: 30em;
+  overflow: auto;
+}
+
+#roomContainer {
+  display:flex;
+}
+
+#videoPlayer {
+  background-color: rgb(255, 81, 241);
+  height:25em;
+  width:40em;
+  text-align: center;
+}
+
+#videoPlayer h4{
+  position:relative;
+  top:50%;
+}
+
+#leftSideOfRoom{
+  width:50%;
+  padding-left: 1em;
+}
+
+#rightSideOfRoom{
+  width:50%;
+}
+
+#roomHeader {
+  position:relative;
+  top:1em;
+  height:5em;
+}
+
+#linkInput {
+  position:relative;
+  top:1em;
+}
+
+#connectedUsers {
+  height:3em;
+
+}
+
+.videoInQueue {
+  font-size:150%;
+  position:relative;
+  top:2em;
 }

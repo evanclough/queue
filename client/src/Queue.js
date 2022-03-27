@@ -18,11 +18,11 @@ const Queue = ({socket}) => {
     }, [socket, videos]);
 
     return (
-        <div>
-            Queue
+        <div id = "queue">
+            Queue: {videos.length === 0 ? "empty :(" :  "s"}
             {videos.map((video, index) => (
                 <VideoInQueue
-                    key={index}
+                    key= {index}
                     ID = {video.ID}
                     index = {index}
                 />

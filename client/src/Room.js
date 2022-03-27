@@ -16,15 +16,20 @@ function Room({room, backToHomepage}) {
   }, [setSocket, room]);
 
   return (
-    <div className="Queue">
+    <div id="roomContainer">
       { 
         socket ?
         <>
-          <div>room: {room}</div>
-          <div> <VideoPlayer socket={socket}/> <Queue socket={socket}/></div>
-          <div> <LinkInput socket={socket}/></div>
-          <div><button onClick={backToHomepage} > Back to homepage</button></div>
-          <div><ConnectedUsers socket={socket}/></div>
+          <div id = 'leftSideOfRoom'>
+            <div id='roomHeader'><h1>room: {room}</h1></div>
+            <div id = 'connectedUsers'><ConnectedUsers socket={socket}/></div>
+            <div> <VideoPlayer socket={socket}/> </div>
+            <div id = "linkInput"> <LinkInput socket={socket}/></div>
+          </div>
+          <div id ='rightSideOfRoom'>
+          <div id = "backToHomepageButton"><button onClick={backToHomepage} > Back to homepage</button></div>
+            <Queue socket={socket}/>
+          </div>
         </> :
         "connecting..."
       } 
