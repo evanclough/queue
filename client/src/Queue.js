@@ -19,9 +19,9 @@ const Queue = ({socket}) => {
 
     return (
         <div id = "queue">
-            <span id="queueHeader">            
+            <div id="queueHeader">            
                  <h4>Queue: {videos.length === 0 ? "empty :(" :  ""} </h4>
-            </span>
+            </div>
             {videos.map((video, index) => (
                 <VideoInQueue
                     key= {index}
@@ -32,6 +32,9 @@ const Queue = ({socket}) => {
                     index = {index}
                 />
             ))}
+            <div id="queueFooter">            
+                 <h4>{videos.length === 0 ? "" :  "the end!"} </h4>
+            </div>
         </div>
     )
 

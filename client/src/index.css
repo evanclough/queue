@@ -37,7 +37,10 @@ code {
 
 #backToHomepageButton {
   position:relative;
-  top:1em;
+  width:30%;
+  top:5em;
+  padding-left: 1%;
+
 }
 
 #queue {
@@ -102,8 +105,53 @@ code {
   padding-top:1em;
   font-size:150%;
   position:relative;
-  top:2em;
-  width:100%;
+  top:1em;
+  bottom:1em;
+  width:90%;
+  margin-top: 1em;
+  margin-left:auto;
+  margin-right: auto;
+  border:#000000;
+  border-style:solid;
+  border-radius: 1em;
+  border-width: 2px;
+  background: linear-gradient(90deg, rgba(150,70,255,1) 0%, rgba(241,177,255,1) 0%, rgba(255,95,222,1) 43%, rgba(200,158,255,1) 100%);
+}
+
+a:link {
+  text-decoration: none;
+  color:#000000;
+}
+
+a:visited {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+a:active {
+  text-decoration: none;
+}
+
+button:hover{
+  background:#ffffff;
+  box-shadow: 0 5px 15px rgba(145, 92, 182, .4);
+}
+
+input:hover{
+  background:#ffffff;
+  box-shadow: 0 5px 15px rgba(145, 92, 182, .4);
+
+}
+
+input {
+  background:#fac5ff;
+}
+
+button{
+  background:#fac5ff;
 }
 
 .indexInQueue {
@@ -113,14 +161,23 @@ code {
 
 #queueHeader {
   position:relative;
-  top:1em;
+  top:1.5em;
   width:100%;
   text-align: center;  
+}
+
+#queueFooter {
+
+  position:relative;
+  width:100%;
+  top: 3em;
+  text-align: center; 
 }
 
 .imageInVideoInQueue {
   width: 25%;
   padding-right: 2%;
+  padding-bottom:1em;
 }
 
 .titleInVideoInQueue {
