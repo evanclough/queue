@@ -1,7 +1,6 @@
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
-import './FindRoomInput.css'
 
 const HOST_URL = 'localhost:5000'
 
@@ -26,15 +25,16 @@ const FindRoomInput = ({setRoomVisible, setCurrentRoom}) => {
         })
     }
 
-    return <div id = 'container'>  
+    return <div className="homepageChild">  
         <form onSubmit={submitRoom}>
             <input
                 autoFocus
                 value={room}
-                placeholder="Enter the room you'd like to join!"
+                placeholder="Enter the name of the room you'd like to join!"
                 onChange={(e) => {
                     setRoom(e.currentTarget.value);
                 }}
+                className="homepageInput"
             />
         </form>
         <div>

@@ -26,7 +26,7 @@ const CreateRoomInput = ({socket}) => {
         setRoomName("");
     }
 
-    return <div>  
+    return <div className="homepageChild">  
         <form onSubmit={submitRoom}>
             <input
                 autoFocus
@@ -35,6 +35,7 @@ const CreateRoomInput = ({socket}) => {
                 onChange={(e) => {
                     setRoomName(e.currentTarget.value);
                 }}
+                className="homepageInput"
             />
         </form>
         <div>

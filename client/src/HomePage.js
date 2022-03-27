@@ -1,20 +1,16 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './HomePage.css';
 import FindRoomInput from './FindRoomInput';
-import CreateRoomInput from "./CreateRoomInput";
+import Header from "./Header";
 
 function HomePage({setRoomVisible, setCurrentRoom}) {
 
   return (
-    <div id="container">
-      <div id = "homepage">
-        <h1> Queue</h1>
+    <div id="homePageContainer">
+        <Header/>
         <FindRoomInput
             setRoomVisible={setRoomVisible}
             setCurrentRoom={setCurrentRoom}
         />
-        <CreateRoomInput/>
-      </div>
     </div>
   );
 }

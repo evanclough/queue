@@ -8,11 +8,11 @@ function App() {
   const [currentRoom, setCurrentRoom] = useState("");
   
   return (
-    <div className="App">
+    <div>
     {roomVisible ?
         <Room
           room={currentRoom}
-          backToHomepage = {() => setRoomVisible(false)}
+          backToHomepage = {() => setRoomVisible(false)}  
         />
       :
         <HomePage
