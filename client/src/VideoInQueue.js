@@ -6,7 +6,7 @@ const VideoInQueue = ({ID, index, title, channel_name, channel_url}) => {
     return (
         <div className = 'videoInQueue'>
             <span className="indexInQueue">
-                <b>{index}</b>  
+                <b>{index+1}</b>  
             </span>
             <img className="imageInVideoInQueue" src = {`https://i.ytimg.com/vi/${ID}/hqdefault.jpg`} alt=""></img>
             <span className="titleInVideoInQueue">

@@ -117,6 +117,7 @@ class Room(Namespace):
                     self.started_video_at = int(time.time())
                     print(self.current_video_ID, self.current_video_duration, self.started_video_at, len(list(self.queue.queue)))
                     emit("switch_video", {"videoID": self.current_video_ID, "startPoint": 0}, broadcast=True)
+                    emit("dequeue", broadcast=True)
         else:
             print("a video is going")
             if int(time.time()) - self.started_video_at > self.current_video_duration:
