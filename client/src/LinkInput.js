@@ -19,7 +19,7 @@ const LinkInput = ({socket}) => {
         setLink("");
     }
 
-    return <div >  
+    return <div id="linkInput">  
         <form onSubmit={submitLink}>
             <input
                 autoFocus
@@ -28,7 +28,6 @@ const LinkInput = ({socket}) => {
                 onChange={(e) => {
                     setLink(e.currentTarget.value);
                 }}
-                id="linkInput"
             />
         </form>
         <div>

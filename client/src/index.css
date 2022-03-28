@@ -22,6 +22,9 @@ code {
   background-color: #fac5ff;
 }
 
+#currentVideoInfo {
+  width:80%;
+}
 
 .homepageChild {
   position:relative;
@@ -36,10 +39,9 @@ code {
 }
 
 #backToHomepageButton {
-  position:relative;
+  position:absolute;
   width:30%;
-  top:5em;
-  padding-left: 1%;
+  bottom:5em;
 
 }
 
@@ -124,7 +126,7 @@ a:link {
 }
 
 a:visited {
-  text-decoration: none;
+  color:#000000;
 }
 
 a:hover {
@@ -190,7 +192,5 @@ button{
 }
 
 #linkInput {
-  padding-left: 1%;
-  padding-right: 1%;
   width:89%;
 }

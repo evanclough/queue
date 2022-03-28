@@ -121,11 +121,11 @@ class Room(Namespace):
                     self.current_video_duration = new_video_obj["duration"]
                     self.started_video_at = int(time.time())
                     print(self.current_video_ID, self.current_video_duration, self.started_video_at, len(list(self.queue.queue)))
-                    emit("switch_video", {"videoID": self.current_video_ID, "startPoint": 0}, broadcast=True)
+                    emit("switch_video", {"videoID": self.current_video_ID, "startPoint": 0, "title": new_video_obj["title"], "channelName": new_video_obj["author_name"], "channelUrl": new_video_obj["author_url"]}, broadcast=True)
                     emit("dequeue", broadcast=True)
         else:
             print("a video is going")
-            if int(time.time()) - self.started_video_at > self.current_video_duration:
+            if int(time.time()) - self.started_video_at > self.current_video_duration + 1:
                 print("switching to new video")
                 if len(list(self.queue.queue)) != 0:
                     new_video_obj = self.queue.get()
