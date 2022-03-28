@@ -15,11 +15,6 @@ code {
 
 #homePageContainer {
   margin:auto;
-  width:50%;
-  position: absolute;
-  top:5em;
-  left: 25%;
-  background-color: #fac5ff;
 }
 
 #currentVideoInfo {
