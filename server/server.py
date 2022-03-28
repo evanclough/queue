@@ -9,16 +9,21 @@ from queue import Queue
 import time
 from multiprocessing import Process, Value, Array
 import youtube_dl
+from dotenv import load_dotenv
+from os import getenv
 
 app = Flask(__name__)
 CORS(app)
 app.config['SECRET_KEY'] = 'secret!'
 mysql = MySQL()
+load_dotenv()
 
-app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'password'
+
+app.config['MYSQL_DATABASE_USER'] = os.getenv("DB_USER")
+app.config['MYSQL_DATABASE_PASSWORD'] = os.getenv("DB_PASSWORD")
 app.config['MYSQL_DATABASE_DB'] = 'queue'
-app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+app.config['MYSQL_DATABASE_HOST'] = os.getenv("DB_HOST")
+
 mysql.init_app(app)
 
 socketio = SocketIO(app, cors_allowed_origins="*")
