@@ -32,14 +32,13 @@ code {
 #backToHomepageButton {
   position:absolute;
   width:30%;
-  bottom:5em;
+  bottom:2em;
 
 }
 
 #queue {
   height:30em;
   width:80%;
-  background: linear-gradient(90deg, rgba(150,70,255,1) 0%, rgba(241,177,255,1) 0%, rgba(242,225,255,1) 49%, rgba(200,158,255,1) 100%);
   position: relative;
   top:2em;
   max-height: 30em;
