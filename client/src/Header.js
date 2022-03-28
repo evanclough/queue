@@ -1,7 +1,7 @@
 
 
 const Header = () => {
-    return <div id = "header" className="homepageChild">
+    return <div  className="homepageChild">
         <h1>Queue!</h1>
     </div>
 }

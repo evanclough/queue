@@ -13,9 +13,6 @@ code {
     monospace;
 }
 
-#homePageContainer {
-  margin:auto;
-}
 
 #currentVideoInfo {
   width:80%;
@@ -23,14 +20,13 @@ code {
 
 .homepageChild {
   position:relative;
-  top:2em;
+  top:10em;
   height:8em;
-  transform: translate(25%, 0);
+  padding-left: 30%;
 }
 
 .homepageInput {
-  width:25em;
-  height:3em;
+  width:40%;
 }
 
 #backToHomepageButton {
