@@ -19,10 +19,10 @@ mysql = MySQL()
 load_dotenv()
 
 
-app.config['MYSQL_DATABASE_USER'] = os.getenv("DB_USER")
-app.config['MYSQL_DATABASE_PASSWORD'] = os.getenv("DB_PASSWORD")
+app.config['MYSQL_DATABASE_USER'] = getenv("DB_USER")
+app.config['MYSQL_DATABASE_PASSWORD'] = getenv("DB_PASSWORD")
 app.config['MYSQL_DATABASE_DB'] = 'queue'
-app.config['MYSQL_DATABASE_HOST'] = os.getenv("DB_HOST")
+app.config['MYSQL_DATABASE_HOST'] = getenv("DB_HOST")
 
 mysql.init_app(app)
 
