@@ -25,6 +25,11 @@ code {
   padding-left: 30%;
 }
 
+#voteToSkipContainer {
+  position:relative;
+  top:2em;
+}
+
 .homepageInput {
   width:40%;
 }
@@ -33,6 +38,7 @@ code {
   position:absolute;
   width:30%;
   bottom:2em;
+  margin:auto;
 
 }
 

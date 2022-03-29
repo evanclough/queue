@@ -11,7 +11,7 @@ const ConnectedUsers = ({socket}) => {
 
     return (
         <h4>
-            Connected Users: {connectedUsers}
+            Connected Users: {connectedUsers - 1}
         </h4>
     )
 }

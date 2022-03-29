@@ -18,14 +18,12 @@ async function grabRooms(){
 async function main(){
     const rooms = await grabRooms();
 
-    console.log(rooms);
-
     const room_sockets = rooms.map(room => io(`http://localhost:5000/${room}`));
 
     room_sockets.map(sck => sck.on("connect", () => console.log("conn")));
 
     setInterval(() => {
-        room_sockets.map(sck => sck.emit("main_loop"))
+        room_sockets.map(sck => sck.emit("main_loop", {SECRET_KEY_FOR_SCUFFED_SERVERCLIENT: process.env.SECRET_KEY_FOR_SCUFFED_SERVERCLIENT}))
     }, 500);
 }
 

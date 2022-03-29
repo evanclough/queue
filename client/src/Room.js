@@ -6,6 +6,7 @@ import VideoPlayer from './VideoPlayer';
 import Queue from './Queue';
 import ConnectedUsers from './ConnectedUsers';
 import CurrentVideoHeader from './CurrentVideoHeader';
+import VotesToSkip from './VoteToSkip';
 
 function Room({room, backToHomepage}) {
   const [socket, setSocket] = useState(null);
@@ -27,10 +28,11 @@ function Room({room, backToHomepage}) {
             <CurrentVideoHeader socket={socket}/>
             <div id = 'videoPlayerContainer'> <VideoPlayer socket={socket}/> </div>
             <div id = "linkInput"> <LinkInput socket={socket}/></div>
-            <div id = "backToHomepageButton"><button onClick={backToHomepage} > Back to homepage</button></div>
+            <div> <VotesToSkip socket={socket} /></div>
           </div>
           <div id ='rightSideOfRoom'>
             <Queue socket={socket}/>
+            <div id = "backToHomepageButton"><button onClick={backToHomepage} > Back to homepage</button></div>
           </div>
         </> :
         "connecting..."

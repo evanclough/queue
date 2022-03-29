@@ -38,6 +38,14 @@ def get_duration(ID):
         dictMeta = dl.extract_info(f"https://www.youtube.com/watch?v={ID}", download=False)
     return dictMeta['duration']
 
+@app.route('/login', methods=['POST'])
+def login():
+    #take in username/password
+    #check if valid
+    #if so, generate token
+    #add token to db list of active tokens
+    pass
+
 def get_rooms():
     with mysql.connect() as connection:
         cursor = connection.cursor()
@@ -87,6 +95,7 @@ class Room(Namespace):
         self.current_video_ID = "-1"
         self.started_video_at = 0
         self.current_video_duration = -1
+        self.current_votes_to_skip = 0
         print("initialized", route)
     def on_connect(self, auth):
         self.connected+=1
@@ -99,6 +108,9 @@ class Room(Namespace):
         print('client_disconnected')
         self.connected-=1
         emit("connected_users", {"connected_users": self.connected}, broadcast=True)
+    def on_vote_to_skip(self):
+        self.current_votes_to_skip+=1
+        emit("add_vote_to_skip", broadcast=True)
     def on_link_input(self, data):
         link = html.escape(data["link"])
         #check if link is valid youtube video
@@ -111,39 +123,40 @@ class Room(Namespace):
         self.queue.put({"ID": VIDEO_ID, "duration": get_duration(VIDEO_ID), "title": video_data["title"], "author_name": video_data["author_name"], "author_url": video_data["author_url"]})
         emit("add_video", {"video": {"ID": VIDEO_ID, "title": video_data["title"], "author_name": video_data["author_name"], "author_url": video_data["author_url"]}}, broadcast=True)
         emit("input_status", {"success": True})
-    def on_main_loop(self):
-        if self.current_video_ID == "-1":
-            print("there are no videos in the queue")
-            if len(list(self.queue.queue)) != 0:
-                    print("video added, switching")
-                    new_video_obj = self.queue.get()
-                    self.current_video_ID = new_video_obj["ID"]
-                    self.current_video_duration = new_video_obj["duration"]
-                    self.started_video_at = int(time.time())
-                    print(self.current_video_ID, self.current_video_duration, self.started_video_at, len(list(self.queue.queue)))
-                    emit("switch_video", {"videoID": self.current_video_ID, "startPoint": 0, "title": new_video_obj["title"], "channelName": new_video_obj["author_name"], "channelUrl": new_video_obj["author_url"]}, broadcast=True)
-                    emit("dequeue", broadcast=True)
-        else:
-            print("a video is going")
-            if int(time.time()) - self.started_video_at > self.current_video_duration + 1:
-                print("switching to new video")
+    def on_main_loop(self, auth):
+        if auth["SECRET_KEY_FOR_SCUFFED_SERVERCLIENT"] == getenv("SECRET_KEY_FOR_SCUFFED_SERVERCLIENT"):
+            if self.current_video_ID == "-1":
+                print("there are no videos in the queue")
                 if len(list(self.queue.queue)) != 0:
-                    new_video_obj = self.queue.get()
-                    self.current_video_ID = new_video_obj["ID"]
-                    self.current_video_duration = new_video_obj["duration"]
-                    self.started_video_at = int(time.time())
-                    emit('switch_video', {"videoID": self.current_video_ID, "startPoint": 0}, broadcast=True)
-                    emit("dequeue", broadcast=True)
-                else:
-                    print("video is over but there are no new ones :(")
-                    self.current_video_duration = -1
-                    self.current_video_ID = "-1"
-                    self.started_video_at = 0
-                    emit('switch_video', {"videoID": self.current_video_ID, "startPoint": 0}, broadcast=True)
-                    emit("dequeue", broadcast=True)
-
-            #check if current video is over
-            #if so pop queue and switch current_video, started_at, and current_video_duration
+                        print("video added, switching")
+                        new_video_obj = self.queue.get()
+                        self.current_video_ID = new_video_obj["ID"]
+                        self.current_video_duration = new_video_obj["duration"]
+                        self.started_video_at = int(time.time())
+                        self.current_votes_to_skip = 0
+                        print(self.current_video_ID, self.current_video_duration, self.started_video_at, len(list(self.queue.queue)))
+                        emit("switch_video", {"videoID": self.current_video_ID, "startPoint": 0, "title": new_video_obj["title"], "channelName": new_video_obj["author_name"], "channelUrl": new_video_obj["author_url"]}, broadcast=True)
+                        emit("dequeue", broadcast=True)
+            else:
+                print("a video is going")
+                if int(time.time()) - self.started_video_at > self.current_video_duration + 1 or self.current_votes_to_skip / (self.connected - 1 if self.connected != 0 else 1) > 0.5:
+                    print("switching to new video")
+                    if len(list(self.queue.queue)) != 0:
+                        new_video_obj = self.queue.get()
+                        self.current_video_ID = new_video_obj["ID"]
+                        self.current_video_duration = new_video_obj["duration"]
+                        self.started_video_at = int(time.time())
+                        self.current_votes_to_skip = 0
+                        emit("switch_video", {"videoID": self.current_video_ID, "startPoint": 0, "title": new_video_obj["title"], "channelName": new_video_obj["author_name"], "channelUrl": new_video_obj["author_url"]}, broadcast=True)
+                        emit("dequeue", broadcast=True)
+                    else:
+                        print("video is over but there are no new ones :(")
+                        self.current_video_duration = -1
+                        self.current_video_ID = "-1"
+                        self.started_video_at = 0
+                        self.current_votes_to_skip = 0
+                        emit("switch_video", {"videoID": self.current_video_ID, "startPoint": 0, "title": "-1", "channelName": "-1", "channelUrl": "-1"}, broadcast=True)
+                        emit("dequeue", broadcast=True)
 
 
 if __name__ == '__main__':
