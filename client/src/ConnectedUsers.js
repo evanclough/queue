@@ -7,7 +7,7 @@ const ConnectedUsers = ({socket}) => {
         socket.on("connected_users", data => {
             setConnectedUsers(data.connected_users);
         })
-    }, [socket, connectedUsers])
+    }, [socket])
 
     return (
         <h4>

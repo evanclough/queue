@@ -30,15 +30,25 @@ code {
   top:2em;
 }
 
+#toggleViewButton {
+  position: relative;
+  width:20%;
+  top:2em;
+}
+
+#skipping {
+  position:relative;
+  top:2em;
+}
+
 .homepageInput {
   width:40%;
 }
 
 #backToHomepageButton {
-  position:absolute;
+  position:relative;
   width:30%;
-  bottom:2em;
-  margin:auto;
+  top:9em;
 
 }
 
@@ -96,7 +106,8 @@ code {
 
 #connectedUsers {
   height:3em;
-
+  position:relative;
+  top:1em;
 }
 
 .videoInQueue {

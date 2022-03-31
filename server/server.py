@@ -87,7 +87,6 @@ def create_room():
 
 if __name__ == '__main__':
     rooms = get_rooms()
-    room_processes = []
     for room in rooms:
         room_obj = Room(f'/{room["name"]}', emit, debug=True)
         socketio.on_namespace(room_obj)

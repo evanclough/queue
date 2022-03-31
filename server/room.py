@@ -93,6 +93,8 @@ class Room(Namespace):
                     print("a video is going")
                 #if the videos over, swtich it
                 if int(time.time()) - self.started_video_at > self.current_video_duration + 1 or self.current_votes_to_skip / (self.connected - 1 if self.connected != 0 else 1) > 0.5:
+                    if self.current_votes_to_skip / (self.connected - 1 if self.connected != 0 else 1) > 0.5:
+                        self.emit("skipping", broadcast=True)
                     if self.debug:
                         print("switching to new video")
                     #if there's a video in the queue, switch to that one
