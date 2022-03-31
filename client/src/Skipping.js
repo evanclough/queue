@@ -5,7 +5,6 @@ const Skipping = ({socket}) => {
 
     useEffect(() => {
         socket.on("skipping", () => {
-            console.log(1);
             setShowSkipping(true);
             setTimeout(() => setShowSkipping(false), 3000);
         })

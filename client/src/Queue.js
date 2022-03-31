@@ -1,6 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {useState, useEffect} from 'react';
 import VideoInQueue from './VideoInQueue';
+import { ListGroup} from 'reactstrap';
 
 const Queue = ({socket}) => {
     const [videos, setVideos] = useState([]);
@@ -18,10 +19,7 @@ const Queue = ({socket}) => {
     }, [socket, videos]);
 
     return (
-        <div id = "queue">
-            <div id="queueHeader">            
-                 <h4>Queue: {videos.length === 0 ? "empty :(" :  ""} </h4>
-            </div>
+        <ListGroup>
             {videos.map((video, index) => (
                 <VideoInQueue
                     key= {index}
@@ -30,12 +28,9 @@ const Queue = ({socket}) => {
                     channel_name={video.author_name}
                     channel_url={video.author_url}
                     index = {index}
-                />
+            />
             ))}
-            <div id="queueFooter">            
-                 <h4>{videos.length === 0 ? "" :  "the end!"} </h4>
-            </div>
-        </div>
+        </ListGroup>
     )
 
 }

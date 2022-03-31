@@ -9,6 +9,8 @@ import CurrentVideoHeader from './CurrentVideoHeader';
 import VotesToSkip from './VoteToSkip';
 import Skipping from './Skipping';
 import ToggleView from './ToggleView';
+import FullView from './FullView';
+import QueueView from './QueueView';
 
 function Room({room, backToHomepage}) {
   const [socket, setSocket] = useState(null);
@@ -28,24 +30,23 @@ function Room({room, backToHomepage}) {
     <div id="roomContainer">
       { 
         socket ?
-        <>
-        {fullView ? <div id = 'leftSideOfRoom'>
-            <div id='roomHeader'><h1>room: {room}</h1></div>
-            <CurrentVideoHeader socket={socket}/>
-            <div id = 'videoPlayerContainer'> <VideoPlayer socket={socket}/> </div>
-            <div> <VotesToSkip socket={socket} /></div>
-            <Skipping socket={socket}/>
-          </div> : ""}
-          
-          <div id ='rightSideOfRoom'>
-          <div id = 'connectedUsers'><ConnectedUsers socket={socket}/></div>
-            <Queue socket={socket}/>
-            <div id = "linkInput"> <LinkInput socket={socket}/></div>
-            <div id = "backToHomepageButton"><button onClick={backToHomepage} > Back to homepage</button></div>
-            <div id="toggleViewButton"><ToggleView toggleView={toggleView}/></div>
-
-          </div>
-        </> :
+          fullView ?
+            <FullView 
+              socket={socket}
+              backToHomepage={backToHomepage}
+              toggleView={toggleView}
+              room={room}
+              accountInfo = {{name: null}}
+            />
+          :
+            <QueueView 
+              socket={socket}
+              backToHomepage={backToHomepage}
+              toggleView={toggleView}
+              room={room}
+              accountInfo = {{name: null}}
+            />  
+      :
         "connecting..."
       } 
       

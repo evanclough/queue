@@ -1,20 +1,12 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {useState, useEffect} from 'react';
-import axios from 'axios';
+import {ListGroupItem } from 'reactstrap';
 
 const VideoInQueue = ({ID, index, title, channel_name, channel_url}) => {
     return (
-        <div className = 'videoInQueue'>
-            <span className="indexInQueue">
-                <b>{index+1}</b>  
-            </span>
+        <ListGroupItem>
             <img className="imageInVideoInQueue" src = {`https://i.ytimg.com/vi/${ID}/hqdefault.jpg`} alt=""></img>
-            <span className="titleInVideoInQueue">
-                <a href={`https://youtube.com/watch?v=${ID}`}>
-                    {title}
-                </a>
-            </span>
-        </div>
+            <a href = {`https://youtube.com/watch?v=${ID}`}>{title}</a> by <a href={channel_url}>{channel_name}</a>
+        </ListGroupItem>
     )
 }
 
