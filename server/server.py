@@ -1,42 +1,36 @@
 from flask import Flask, request
 from flask_cors import CORS
-from flask_socketio import SocketIO, send, emit, Namespace
+from flask_socketio import SocketIO, send, emit
 from flaskext.mysql import MySQL
-import time
-import html
-import requests
-from queue import Queue
-import time
-from multiprocessing import Process, Value, Array
-import youtube_dl
 from dotenv import load_dotenv
 from os import getenv
+from room import Room
 
+#initialize flask app
 app = Flask(__name__)
+#allow CORS
 CORS(app)
-app.config['SECRET_KEY'] = 'secret!'
+#initialize pymysql
 mysql = MySQL()
+#load environment variables
 load_dotenv()
 
-
+#configure db
 app.config['MYSQL_DATABASE_USER'] = getenv("DB_USER")
 app.config['MYSQL_DATABASE_PASSWORD'] = getenv("DB_PASSWORD")
 app.config['MYSQL_DATABASE_DB'] = 'queue'
 app.config['MYSQL_DATABASE_HOST'] = getenv("DB_HOST")
 
+#connect mysql to flask app with magic
 mysql.init_app(app)
 
+#create socketio instance
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 #query db with:
 #with mysql.connect() as connection
 #if insert, connection.commit
 #if pulling, cursor.fetchone or cursor.fetchall
-
-def get_duration(ID):
-    with youtube_dl.YoutubeDL({}) as dl:
-        dictMeta = dl.extract_info(f"https://www.youtube.com/watch?v={ID}", download=False)
-    return dictMeta['duration']
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -46,6 +40,7 @@ def login():
     #add token to db list of active tokens
     pass
 
+#grabs list of rooms from db
 def get_rooms():
     with mysql.connect() as connection:
         cursor = connection.cursor()
@@ -57,10 +52,12 @@ def get_rooms():
             res.append({"ID": room[0], "name": room[1]})
         return res
 
+#route to grab list of rooms
 @app.route('/get_rooms')
 def get_rooms_route():
     return get_rooms()
 
+#checks if inputted room is valid, and returns answer
 @app.route("/check_if_valid_room", methods=['POST'])
 def check_if_valid_room():
     with mysql.connect() as connection:
@@ -74,6 +71,7 @@ def check_if_valid_room():
             res |= (datum[1] == name)
         return {"roomExists": res}
 
+#creates room if available, returns false if not
 @app.route('/create_room', methods=['POST'])
 def create_room():
     with mysql.connect() as connection:
@@ -87,89 +85,10 @@ def create_room():
         connection.commit()
         return {"success": True}
 
-class Room(Namespace):
-    def __init__(self, route):
-        super().__init__(route)
-        self.queue = Queue()
-        self.connected = 0
-        self.current_video_ID = "-1"
-        self.started_video_at = 0
-        self.current_video_duration = -1
-        self.current_votes_to_skip = 0
-        print("initialized", route)
-    def on_connect(self, auth):
-        self.connected+=1
-        print('connected')
-        qlist = list(self.queue.queue)
-        emit("current_videos", {"videos": qlist})
-        emit("connected_users", {"connected_users": self.connected}, broadcast=True)
-        emit('switch_video', {"videoID": self.current_video_ID, "startPoint": int(time.time()) - self.started_video_at})
-    def on_disconnect(self):
-        print('client_disconnected')
-        self.connected-=1
-        emit("connected_users", {"connected_users": self.connected}, broadcast=True)
-    def on_vote_to_skip(self):
-        self.current_votes_to_skip+=1
-        emit("add_vote_to_skip", broadcast=True)
-    def on_link_input(self, data):
-        link = html.escape(data["link"])
-        #check if link is valid youtube video
-        VIDEO_ID = link[len(link) - 11:]
-        r = requests.get(f"https://www.youtube.com/watch?v={VIDEO_ID}")
-        if "Video unavailable" in r.text:
-            emit("input_status", {"success": False})
-            return
-        video_data = requests.get(f"https://noembed.com/embed?url=https://www.youtube.com/watch?v={VIDEO_ID}").json()
-        self.queue.put({"ID": VIDEO_ID, "duration": get_duration(VIDEO_ID), "title": video_data["title"], "author_name": video_data["author_name"], "author_url": video_data["author_url"]})
-        emit("add_video", {"video": {"ID": VIDEO_ID, "title": video_data["title"], "author_name": video_data["author_name"], "author_url": video_data["author_url"]}}, broadcast=True)
-        emit("input_status", {"success": True})
-    def on_main_loop(self, auth):
-        if auth["SECRET_KEY_FOR_SCUFFED_SERVERCLIENT"] == getenv("SECRET_KEY_FOR_SCUFFED_SERVERCLIENT"):
-            if self.current_video_ID == "-1":
-                print("there are no videos in the queue")
-                if len(list(self.queue.queue)) != 0:
-                        print("video added, switching")
-                        new_video_obj = self.queue.get()
-                        self.current_video_ID = new_video_obj["ID"]
-                        self.current_video_duration = new_video_obj["duration"]
-                        self.started_video_at = int(time.time())
-                        self.current_votes_to_skip = 0
-                        print(self.current_video_ID, self.current_video_duration, self.started_video_at, len(list(self.queue.queue)))
-                        emit("switch_video", {"videoID": self.current_video_ID, "startPoint": 0, "title": new_video_obj["title"], "channelName": new_video_obj["author_name"], "channelUrl": new_video_obj["author_url"]}, broadcast=True)
-                        emit("dequeue", broadcast=True)
-            else:
-                print("a video is going")
-                if int(time.time()) - self.started_video_at > self.current_video_duration + 1 or self.current_votes_to_skip / (self.connected - 1 if self.connected != 0 else 1) > 0.5:
-                    print("switching to new video")
-                    if len(list(self.queue.queue)) != 0:
-                        new_video_obj = self.queue.get()
-                        self.current_video_ID = new_video_obj["ID"]
-                        self.current_video_duration = new_video_obj["duration"]
-                        self.started_video_at = int(time.time())
-                        self.current_votes_to_skip = 0
-                        emit("switch_video", {"videoID": self.current_video_ID, "startPoint": 0, "title": new_video_obj["title"], "channelName": new_video_obj["author_name"], "channelUrl": new_video_obj["author_url"]}, broadcast=True)
-                        emit("dequeue", broadcast=True)
-                    else:
-                        print("video is over but there are no new ones :(")
-                        self.current_video_duration = -1
-                        self.current_video_ID = "-1"
-                        self.started_video_at = 0
-                        self.current_votes_to_skip = 0
-                        emit("switch_video", {"videoID": self.current_video_ID, "startPoint": 0, "title": "-1", "channelName": "-1", "channelUrl": "-1"}, broadcast=True)
-                        emit("dequeue", broadcast=True)
-
-
 if __name__ == '__main__':
     rooms = get_rooms()
     room_processes = []
-    #re render room list when new room is made
     for room in rooms:
-        room_obj = Room(f'/{room["name"]}')
-        #room_obj_value = Value(Room, room_obj)
+        room_obj = Room(f'/{room["name"]}', emit, debug=True)
         socketio.on_namespace(room_obj)
-        #room_processes.append(Process(target=lambda r: r.value.main_loop(), args=(room_obj_value)))
-    #for room_process in room_processes:
-    #    room_process.start()
     socketio.run(app, use_reloader=False)
-    #for room_process in room_processes:
-    #    room_process.join()
