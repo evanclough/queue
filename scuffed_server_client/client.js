@@ -26,12 +26,10 @@ async function grabRooms(){
 async function main(){
     //bring in environment variables
     require('dotenv').config();
-    //connect to main server
-    const socket = io("http://" + process.env.SERVER_URL);
     //grabs list of rooms
     const rooms = await grabRooms();
     //creates connection to each room
-    const room_sockets = rooms.map(room => io(`http://localhost:5000/${room}`));
+    const room_sockets = rooms.map(room => io(`http://${process.env.SERVER_URL}/${room}`));
     //creates listener for connections that logs when connected, debug feature
     room_sockets.map(sck => sck.on("connect", () => console.log("conn")));
     //each connection emits a main loop call twice a second

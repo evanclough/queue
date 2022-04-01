@@ -2,10 +2,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {useState, useEffect} from 'react';
 import VideoInQueue from './VideoInQueue';
 import { ListGroup} from 'reactstrap';
-import LinkInput from './LinkInput';
-import Videos from './Videos';
 
-const Queue = ({socket, fullView}) => {
+const Videos = ({socket}) => {
     const [videos, setVideos] = useState([]);
 
     useEffect(() => {
@@ -21,16 +19,19 @@ const Queue = ({socket, fullView}) => {
     }, [socket, videos]);
 
     return (
-        <div id={fullView ? "queueContainer" : "queueContainerSolo"}className={fullView ? "fullViewChild" : ""}> 
-            <div id = "linkInputContainer">
-                <LinkInput socket={socket}/>
-            </div>        
-            <div id = "videosContainer">
-                <Videos socket={socket}/>
-            </div>
-        </div>
+        <ListGroup numbered>
+            {videos.map((video, index) => (
+                <VideoInQueue
+                    key= {index}
+                    ID = {video.ID}
+                    title={video.title}
+                    channel_name={video.author_name}
+                    channel_url={video.author_url}
+                    index = {index}
+                />
+            ))}
+        </ListGroup>
     )
-
 }
 
-export default Queue;
+export default Videos;

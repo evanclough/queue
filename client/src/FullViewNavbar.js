@@ -10,39 +10,33 @@ import {
     DropdownToggle,
     DropdownMenu,
     DropdownItem,
+    InputGroup,
+    Button
      } from 'reactstrap';
+import ConnectedUsers from './ConnectedUsers';
 
-const FullViewNavbar = ({toggleView, backToHomepage, room, accountInfo}) => {
+const FullViewNavbar = ({socket, toggleView, backToHomepage, room, accountInfo}) => {
     return (
         <Navbar color="dark" dark={true}>
         <Nav>
-            <NavbarToggler  
+            <Button
                 onClick = {backToHomepage}
-            >
-                back to homepage
-            </NavbarToggler>
-            <NavbarToggler  
+                className="mx-1"
+            > 
+                Home
+            </Button>
+            <Button  
                 onClick = {toggleView}
+                className="mx-1"
             >
-                toggle view
-            </NavbarToggler>
+                Switch View
+            </Button>
+            
             <NavbarBrand
+                className='mx-3'
             >
-              {room}
-            </NavbarBrand>
-            <UncontrolledDropdown nav inNavbar>
-                <DropdownToggle nav caret>
-                Account: {accountInfo.name ?? "Anonymous"}
-                </DropdownToggle>
-                <DropdownMenu right>
-                    <DropdownItem>
-                         Account Thing 1
-                    </DropdownItem>
-                    <DropdownItem>
-                        Account Thing 2
-                    </DropdownItem>
-                </DropdownMenu>
-          </UncontrolledDropdown>
+              Room: {room}
+            </NavbarBrand >
         </Nav>
       </Navbar>
     )

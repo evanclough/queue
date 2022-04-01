@@ -15,16 +15,17 @@ const CurrentVideoHeader = ({socket}) => {
         })
     }, [socket]);
 
-    return <div id="currentVideoInfo">
-        {currentVideoID === "-1" ? 
-            <p> the queue is empty :( </p>:
-            <p> Current Video:{" "} 
-                <a href={`https://www.youtube.com/watch?v=${currentVideoID}`}>{title} </a>
-                by <a href={channelUrl}>{channelName}</a>
-            </p>
-        }
-        
-    </div>
+    return (
+        <div id="currentVideoHeader">
+            {currentVideoID === "-1" ? 
+                <p> the queue is empty :( </p>:
+                <p> Current Video:{" "} 
+                    <a href={`https://www.youtube.com/watch?v=${currentVideoID}`}>{title} </a>
+                    by <a href={channelUrl}>{channelName}</a>
+                </p>
+            }
+        </div>
+    )
 }
 
 export default CurrentVideoHeader;

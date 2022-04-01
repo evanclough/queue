@@ -1,5 +1,6 @@
 import FullViewNavbar from './FullViewNavbar';
 import Queue from './Queue';
+import VideoPlayer from './VideoPlayer';
 
 const FullView = ({socket, toggleView, backToHomepage, room, accountInfo}) => {
     return (
@@ -9,10 +10,18 @@ const FullView = ({socket, toggleView, backToHomepage, room, accountInfo}) => {
                 backToHomepage={backToHomepage}
                 room={room}
                 accountInfo={accountInfo}
-            />
-            <Queue
                 socket={socket}
             />
+            <div id = "fullViewContainer">
+                <VideoPlayer 
+                socket={socket}
+                fullView={true}
+                />
+                <Queue
+                    socket={socket}
+                    fullView={true}
+                />
+            </div>
         </>
     )
 }

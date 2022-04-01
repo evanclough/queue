@@ -18,6 +18,9 @@ class Room(Namespace):
         self.started_video_at = 0
         self.current_video_duration = -1
         self.current_votes_to_skip = 0
+        self.current_video_title = "-1"
+        self.current_video_author_name = "-1"
+        self.current_video_author_url = "-1"
         self.debug = debug
         self.emit = emit_method
         if self.debug:
@@ -30,9 +33,13 @@ class Room(Namespace):
         if self.debug:
             print('connected')
         qlist = list(self.queue.queue)
+        if len(qlist) != 0:
+            new_video_obj = qlist[0]
+        else:
+            new_video_obj = {"title": "-1", "author_name": "-1", "author_url": "-1"}
         self.emit("current_videos", {"videos": qlist})
-        self.emit("connected_users", {"connected_users": self.connected}, broadcast=True)
-        self.emit('switch_video', {"videoID": self.current_video_ID, "startPoint": int(time.time()) - self.started_video_at})
+        self.emit("connected_users", {"connected_users": self.connected - 1}, broadcast=True)
+        self.emit("switch_video", {"videoID": self.current_video_ID, "startPoint": int(time.time()) - self.started_video_at, "title": self.current_video_title, "channelName": self.current_video_author_name, "channelUrl": self.current_video_author_url}, broadcast=True)
 
     #disconnect method just broadcasts connected users going down
     def on_disconnect(self):
@@ -82,10 +89,13 @@ class Room(Namespace):
                     self.current_video_ID = new_video_obj["ID"]
                     self.current_video_duration = new_video_obj["duration"]
                     self.started_video_at = int(time.time())
+                    self.current_video_title = new_video_obj["title"]
+                    self.current_video_author_name = new_video_obj["author_name"]
+                    self.current_video_author_url = new_video_obj["author_url"]
                     self.current_votes_to_skip = 0
                     if self.debug:
                         print(self.current_video_ID, self.current_video_duration, self.started_video_at, len(list(self.queue.queue)))
-                    self.emit("switch_video", {"videoID": self.current_video_ID, "startPoint": 0, "title": new_video_obj["title"], "channelName": new_video_obj["author_name"], "channelUrl": new_video_obj["author_url"]}, broadcast=True)
+                    self.emit("switch_video", {"videoID": self.current_video_ID, "startPoint": 0, "title": self.current_video_title, "channelName": self.current_video_author_name, "channelUrl": self.current_video_author_url}, broadcast=True)
                     self.emit("dequeue", broadcast=True)
             else:
                 #if there is a video playing
@@ -103,8 +113,11 @@ class Room(Namespace):
                         self.current_video_ID = new_video_obj["ID"]
                         self.current_video_duration = new_video_obj["duration"]
                         self.started_video_at = int(time.time())
+                        self.current_video_title = new_video_obj["title"]
+                        self.current_video_author_name = new_video_obj["author_name"]
+                        self.current_video_author_url = new_video_obj["author_url"]
                         self.current_votes_to_skip = 0
-                        self.emit("switch_video", {"videoID": self.current_video_ID, "startPoint": 0, "title": new_video_obj["title"], "channelName": new_video_obj["author_name"], "channelUrl": new_video_obj["author_url"]}, broadcast=True)
+                        self.emit("switch_video", {"videoID": self.current_video_ID, "startPoint": 0, "title": self.current_video_title, "channelName": self.current_video_author_name, "channelUrl": self.current_video_author_url}, broadcast=True)
                         self.emit("dequeue", broadcast=True)
                     else:
                         #if there isn't switch to the no video flag.
@@ -114,5 +127,8 @@ class Room(Namespace):
                         self.current_video_ID = "-1"
                         self.started_video_at = 0
                         self.current_votes_to_skip = 0
-                        self.emit("switch_video", {"videoID": self.current_video_ID, "startPoint": 0, "title": "-1", "channelName": "-1", "channelUrl": "-1"}, broadcast=True)
+                        self.current_video_title = "-1"
+                        self.current_video_author_name = "-1"
+                        self.current_video_author_url = "-1"
+                        self.emit("switch_video", {"videoID": self.current_video_ID, "startPoint": 0, "title": self.current_video_title, "channelName": self.current_video_author_name, "channelUrl": self.current_video_author_url}, broadcast=True)
                         self.emit("dequeue", broadcast=True)

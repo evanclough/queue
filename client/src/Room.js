@@ -7,14 +7,13 @@ import Queue from './Queue';
 import ConnectedUsers from './ConnectedUsers';
 import CurrentVideoHeader from './CurrentVideoHeader';
 import VotesToSkip from './VoteToSkip';
-import Skipping from './Skipping';
 import ToggleView from './ToggleView';
 import FullView from './FullView';
 import QueueView from './QueueView';
 
 function Room({room, backToHomepage}) {
   const [socket, setSocket] = useState(null);
-  const [fullView, setFullView] = useState(true);
+  const [fullView, setFullView] = useState(false);
 
   const toggleView = () => {
     setFullView(fullView ? false : true); //i know this looks scuffed but i don't want to mess with the references

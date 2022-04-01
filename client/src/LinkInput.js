@@ -1,5 +1,6 @@
 import {useState, useEffect} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import {ListGroup, ListGroupItem, Alert} from 'reactstrap';
 
 const LinkInput = ({socket}) => {
     const [showInputStatus, setShowInputStatus] = useState(false);
@@ -19,31 +20,33 @@ const LinkInput = ({socket}) => {
         setLink("");
     }
 
-    return <div id="linkInput">  
-        <form onSubmit={submitLink}>
-            <input
-                autoFocus
-                value={link}
-                placeholder="Enter youtube link"
-                onChange={(e) => {
-                    setLink(e.currentTarget.value);
-                }}
-            />
-        </form>
-        <div>
-            {
-                showInputStatus ?
-                <div>
-                    { 
-                        inputStatus ?
-                        "Video added to queue! :D" :
-                        "Not valid youtube URL. :/"
-                    }
-                </div>
-                : ""
-            }
-        </div>
-    </div>
+    return (
+        <ListGroup>
+            <ListGroupItem>
+                Queue
+            </ListGroupItem>
+            <ListGroupItem>
+                <form onSubmit={submitLink}>
+                    <input
+                        className="w-100"
+                        autoFocus
+                        value={link}
+                        placeholder={ 
+                            showInputStatus ? 
+                                inputStatus ?
+                                "Video added to queue! :D" :
+                                "Not valid youtube URL. :/"
+                            :
+                                "Enter a youtube link!"
+                            }
+                        onChange={(e) => {  
+                            setLink(e.currentTarget.value);
+                        }}
+                    />
+                </form>
+            </ListGroupItem>
+        </ListGroup>
+    )
 
 }
 
