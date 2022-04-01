@@ -23,7 +23,7 @@ const Queue = ({socket, fullView}) => {
     return (
         <div id={fullView ? "queueContainer" : "queueContainerSolo"}className={fullView ? "fullViewChild" : ""}> 
             <div id = "linkInputContainer">
-                <LinkInput socket={socket}/>
+                <LinkInput socket={socket} fullView={fullView}/>
             </div>        
             <div id = "videosContainer">
                 <Videos socket={socket}/>

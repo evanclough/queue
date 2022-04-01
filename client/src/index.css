@@ -97,14 +97,18 @@ code {
 
 #voteToSkipButton {
   position:relative;
-  width:10%;
+  width:100%;
   margin:auto;
+}
+
+#voteToSkipText {
+
 }
 
 #currentVideoHeader {
   position:relative;
-  width:50%;
-  max-width: 50%;
+  width:100%;
+  max-width: 100%;
   overflow:hidden;
   text-overflow: ellipsis;
   margin-right:1rem;

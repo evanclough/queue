@@ -16,7 +16,7 @@ function App() {
         />
       :
         <HomePage
-          setRoomVisible = {setRoomVisible}
+          setRoomVisible = {() => setRoomVisible(true)}
           setCurrentRoom = {setCurrentRoom}
         /> 
     }

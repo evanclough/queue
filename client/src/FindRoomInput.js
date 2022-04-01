@@ -16,11 +16,12 @@ const FindRoomInput = ({setRoomVisible, setCurrentRoom}) => {
             if(response.data.roomExists){
                 setCurrentRoom(room);
                 setRoom("");
-                setRoomVisible(true);
+                setRoomVisible();
             }else{
                 setInputStatus(false);
                 setShowInputStatus(true);
                 setTimeout(() => setShowInputStatus(false), 5000);
+                setRoom("");
             }
         })
     }

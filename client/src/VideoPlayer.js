@@ -36,7 +36,6 @@ const VideoPlayer = ({socket}) => {
             </div>
             <div id = "videoPlayerFooterContainer">
                 <CurrentVideoHeader socket = {socket}/>
-                <VotesToSkip socket = {socket}/>
             </div>
         </div>
     )

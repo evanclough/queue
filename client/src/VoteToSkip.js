@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Button } from 'reactstrap';
+import { Button, ListGroup, ListGroupItem } from 'reactstrap';
 
 const VotesToSkip = ({socket, fullView}) => {
     const [votesToSkip, setVotesToSkip] = useState(0);
@@ -28,26 +28,40 @@ const VotesToSkip = ({socket, fullView}) => {
     }, [socket, votesToSkip])
 
     return (
-        <>
-        <div id = {fullView ? "voteToSkipText" : "queueVoteToSkipText"}>
+        <>{showVotesToSkip || showSkipping ? 
+            <ListGroupItem>
+        <ListGroup horizontal>
             {
                 showSkipping ? 
-                    "skipping video..." : 
+                <ListGroupItem id = {fullView ? "voteToSkipText" : "queueVoteToSkipText"}>
+
+                    skipping video...
+                    </ListGroupItem>
+: 
                         showVotesToSkip ?  
-                        `Current Votes to Skip: ${votesToSkip} / ${Math.floor(connectedUsers / 2) + 1}` :
+                        <ListGroupItem id = {fullView ? "voteToSkipText" : "queueVoteToSkipText"}>
+                            Current Votes to Skip: {votesToSkip} / {Math.floor(connectedUsers / 2) + 1}
+                        </ListGroupItem>
+:
                         ""
             }
-        </div>
-        <div id = {fullView ? "voteToSkipButton" : "queueVoteToSkipButton"}>
+        
             {
-            showVoteToSkipButton ? <Button onClick = {() => {
-                socket.emit("vote_to_skip");
-                setShowVoteToSkipButton(false);
-            }}> Vote to Skip</Button> : ""
+            showVoteToSkipButton ? 
+            <ListGroupItem id = {fullView ? "voteToSkipButton" : "queueVoteToSkipButton"}>
+                <Button onClick = {() => {
+                    socket.emit("vote_to_skip");
+                    setShowVoteToSkipButton(false);
+                }}>
+                    Vote to Skip
+                 </Button>             
+            </ListGroupItem>
+            : ""
 
             }
             
-        </div>
+    </ListGroup> </ListGroupItem>: ""}
+        
         </>
     )
 }

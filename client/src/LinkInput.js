@@ -1,8 +1,9 @@
 import {useState, useEffect} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {ListGroup, ListGroupItem, Alert} from 'reactstrap';
+import VotesToSkip from './VoteToSkip';
 
-const LinkInput = ({socket}) => {
+const LinkInput = ({socket, fullView}) => {
     const [showInputStatus, setShowInputStatus] = useState(false);
     const [inputStatus, setInputStatus] = useState(false);
     const [link, setLink] = useState("");
@@ -22,6 +23,9 @@ const LinkInput = ({socket}) => {
 
     return (
         <ListGroup>
+        <VotesToSkip socket={socket} fullView={false}/>
+    
+            
             <ListGroupItem>
                 Queue
             </ListGroupItem>
