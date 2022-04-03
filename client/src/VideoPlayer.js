@@ -17,6 +17,7 @@ const VideoPlayer = ({socket}) => {
             setChannelName(data.channelName);
             setChannelUrl(data.channelUrl);
         })
+        socket.emit("video_player_mount");
     }, [socket]);
 
     return (

@@ -70,6 +70,9 @@ class Room(Namespace):
         self.emit("add_video", {"video": {"ID": VIDEO_ID, "title": video_data["title"], "author_name": video_data["author_name"], "author_url": video_data["author_url"]}}, broadcast=True)
         self.emit("input_status", {"success": True})
 
+    def on_video_player_mount(self):
+        self.emit("switch_video", {"videoID": self.current_video_ID, "startPoint": int(time.time()) - self.started_video_at, "title": self.current_video_title, "channelName": self.current_video_author_name, "channelUrl": self.current_video_author_url}, broadcast=True)
+
     #main loop function is called twice a seocnd by external constantly 
     #running, it checks whether or not there's a video playing, then 
     #checks whether or not it's done, and switchs to the next video

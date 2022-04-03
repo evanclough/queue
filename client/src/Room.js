@@ -4,6 +4,7 @@ import { io } from 'socket.io-client';
 import LinkInput from './LinkInput';
 import VideoPlayer from './VideoPlayer';
 import Queue from './Queue';
+import FullViewNavbar from './FullViewNavbar';
 import ConnectedUsers from './ConnectedUsers';
 import CurrentVideoHeader from './CurrentVideoHeader';
 import VotesToSkip from './VoteToSkip';
@@ -18,7 +19,7 @@ function Room({room, backToHomepage}) {
   const toggleView = () => {
     setFullView(fullView ? false : true); //i know this looks scuffed but i don't want to mess with the references
   }
-
+  
   useEffect(() => {
     const newSocket = io(`http://localhost:5000/${room}`);
     setSocket(newSocket);
@@ -26,30 +27,34 @@ function Room({room, backToHomepage}) {
   }, [setSocket, room]);
 
   return (  
-    <div id="roomContainer">
+    <>
       { 
         socket ?
-          fullView ?
-            <FullView 
-              socket={socket}
-              backToHomepage={backToHomepage}
-              toggleView={toggleView}
-              room={room}
-              accountInfo = {{name: null}}
+        <>
+          <FullViewNavbar 
+            toggleView={toggleView}
+            backToHomepage={backToHomepage}
+            room={room}
+            socket={socket}
+          />
+          <div id = {fullView ? "fullViewContainer" : "queueViewContainer"}>
+            {fullView ? 
+              <VideoPlayer 
+                socket={socket}
+                fullView={fullView}
+              /> : <></>
+            }
+            <Queue
+              socket = {socket}
+              fullView = {fullView}
             />
-          :
-            <QueueView 
-              socket={socket}
-              backToHomepage={backToHomepage}
-              toggleView={toggleView}
-              room={room}
-              accountInfo = {{name: null}}
-            />  
+          </div>
+      </>
       :
         "connecting..."
       } 
       
-    </div>
+    </>
   );
 }
 
