@@ -46,6 +46,16 @@ code {
   right:0.5rem;
 }
 
+#queueContainerSolo {
+    padding:1rem;
+    width: 95%;
+    height:85vh;
+    background-color:#eee;
+    margin-right: 3rem;
+    position:relative;
+    right:0.5rem;
+}
+
 #videoPlayerContainer {
   margin-top:3vh;
   padding:1rem;
@@ -138,16 +148,6 @@ code {
   width:100%;
 }
 
-#queueContainerSolo {
-  height:85vh;
-  margin-top:3vh;
-  padding:1rem;
-  width:50%;
-  margin:auto;
-  background-color: #eee;
-  position:relative;
-}   
-
 #videosContainer {
   overflow:auto;
   max-height:67vh;
@@ -165,6 +165,28 @@ code {
 .thumbnailImg {
   width:15%;
   margin:0.5rem;
+}
+
+.homepageChildContainer {
+  width:100%;
+  position:relative;
+  top:20rem;
+}
+
+#findRoomInput {
+  position:relative;
+  margin:auto;
+  width: 20%;
+  margin-top: 10vh;
+}
+
+#actualFindRoomInput {
+  width:110%;
+}
+
+#homepageHeaderQueue {
+  color:#ddd;
+  text-align: center;
 }
 
 a:link {

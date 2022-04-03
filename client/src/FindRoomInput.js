@@ -26,32 +26,36 @@ const FindRoomInput = ({setRoomVisible, setCurrentRoom}) => {
         })
     }
 
-    return <div className="homepageChild">  
-        <form onSubmit={submitRoom}>
-            <input
-                autoFocus
-                value={room}
-                placeholder="Enter the name of the room you'd like to join!"
-                onChange={(e) => {
-                    setRoom(e.currentTarget.value);
-                }}
-                className="homepageInput"
-            />
-        </form>
-        <div>
-            {
-                showInputStatus ?
-                <div>
-                    { 
-                        inputStatus ?
-                        "Joining room!" :
-                        "Not valid room... :/"
-                    }
-                </div>
-                : ""
-            }
+    return (
+        <div className="homepageChild">  
+        <div id = "findRoomInput">
+            <form onSubmit={submitRoom}>
+                <input
+                    autoFocus
+                    value={room}
+                    placeholder="Enter the name of the room you'd like to join!"
+                    onChange={(e) => {
+                        setRoom(e.currentTarget.value);
+                    }}
+                    id="actualFindRoomInput"
+                />
+            </form>
+            <div>
+                {
+                    showInputStatus ?
+                    <div>
+                        { 
+                            inputStatus ?
+                            "Joining room!" :
+                            "Not valid room... :/"
+                        }
+                    </div>
+                    : ""
+                }
+            </div>
+            </div>
         </div>
-    </div>
+    )
 
 }
 

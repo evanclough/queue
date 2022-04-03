@@ -1,12 +1,12 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import FindRoomInput from './FindRoomInput';
-import Header from "./Header";
+import HomepageHeader from './HomepageHeader';
 
 function HomePage({setRoomVisible, setCurrentRoom}) {
 
   return (
     <>
-        <Header/>
+        <HomepageHeader/>
         <FindRoomInput
             setRoomVisible={setRoomVisible}
             setCurrentRoom={setCurrentRoom}
