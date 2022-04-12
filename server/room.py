@@ -104,8 +104,9 @@ class Room(Namespace):
                 #if there is a video playing
                 if self.debug:
                     print("a video is going")
-                #if the videos over, swtich it
-                if int(time.time()) - self.started_video_at > self.current_video_duration + 1 or self.current_votes_to_skip / (self.connected - 1 if self.connected != 0 else 1) > 0.5:
+                #if the videos over, , or there are enough votes to skip, swtich it
+                vote_to_skip_flag = self.connected != 1 and  self.current_votes_to_skip / (self.connected - 1 if self.connected != 0 else 1) > 0.5
+                if int(time.time()) - self.started_video_at > self.current_video_duration + 1 or vote_to_skip_flag:
                     if self.current_votes_to_skip / (self.connected - 1 if self.connected != 0 else 1) > 0.5:
                         self.emit("skipping", broadcast=True)
                     if self.debug:
