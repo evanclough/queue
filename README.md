@@ -15,7 +15,7 @@ For now, to develop, you'll need to:
 
 # Goals
 I hope to create an account system for the site, so that
-users can create and run their own rooms, make some kind of dockerfile
-or whatever that is to make it so that you don't have to use three different 
-terminals to start it up, and also make it prettier.
+users can create and run their own rooms. I also hope to add more 
+precise video controls that users in the room could use, like scrolling and 
+pausing.
 
