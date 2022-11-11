@@ -1,7 +1,7 @@
 # Queue
 Queue is a application which enables users to queue videos
 to watch together as a group. Basically unscuffed PlugDJ (RIP).
-Ideal for bored online chatrooms (e.g. twitch offline chat).
+Ideal for bored online chatrooms (e.g. twitch offline chat). Demo: https://streamable.com/da0e9u
 
 # Development
 For now, to develop, you'll need to:
